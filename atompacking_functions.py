@@ -1,0 +1,491 @@
+import random 
+import math 
+import numpy as np
+import subprocess 
+import shlex
+import os
+
+def distance_1(atom1,atom2):
+    dist = math.sqrt(math.pow(atom1[0] - atom2[0], 2) +
+                     math.pow(atom1[1] - atom2[1], 2) +
+                     math.pow(atom1[2] - atom2[2], 2))
+    return dist
+
+
+#This function generate coordinates using distribution over spheric coordinates and the making them Euclidean
+
+def generate_coordinates(r_min=0,r_max=1):
+    theta = random.uniform(0, 2 * math.pi)
+    phi = random.uniform(0, 2 * math.pi)
+    r = random.uniform(r_min,r_max)
+    x = (r * math.cos(theta) * math.sin(phi))
+    y = (r * math.sin(theta) * math.sin(phi))
+    z = (r * math.cos(phi))
+    vector = [x,y,z]
+    return vector;
+
+#This Function sorts atoms 
+def select_atom(atoms =[]):
+    at = np.array(atoms)
+    shape = np.shape(at);
+    dim = shape[1];
+    number =shape[0]
+    if number >=2 :
+        rm = random.randint(0,number-1)
+        selection = atoms[rm]
+    
+        
+    else :    
+        selection = atoms[0]
+    return selection;
+
+def add_coordinates(vector1, vector2):
+    result =[];
+    if vector1 ==[]:
+        result =vector2
+        
+    else:
+        for i in range(len(vector2)):
+            result = [vector1[i] + vector2[i] for i in range(len(vector2))];
+    return result;
+        
+def proof_distance(atom1, atom2, r_min=0,r_max=10):
+    distance = distance_1(atom1, atom2)
+    condition = None;
+    if distance <= r_min:
+        condition = False;
+    elif distance >= r_max:
+        condition = False;
+    else:
+        condition = True;
+    return condition;       
+
+
+
+
+
+
+def generate_atom (atoms=[],r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
+    condition =0;
+    #print("r_max ", r_max, " dist_max", dist_max)
+    if atoms == [] :
+        at1 =[0,0,0];
+    else :
+        temporal_atom = None 
+        num_atoms = len(atoms)
+        while condition ==0:
+            random_coordinates =generate_coordinates(r_min,r_max);
+            base_atom = select_atom(atoms);
+            temporal_atom = add_coordinates(base_atom,random_coordinates);
+            at = np.array(atoms)
+            number = at.ndim
+            if number !=1 :
+               
+                for atom in atoms:
+                    condition =proof_distance(atom, temporal_atom,dist_min ,dist_max)
+                    if condition == 0:
+                        break;
+                    else:
+                        condition = 1;
+            else:
+                atom = atoms
+                condition =proof_distance(atom, temporal_atom,dist_min ,dist_max)
+                if condition == 0:
+                    break;
+                else:
+                    condition = 1;
+          
+                    
+        at1 = temporal_atom;             
+
+                       
+
+    return at1;
+
+def print_xyz(size , matrix, atom , path=""):
+	
+	# print("shape: "+ str(shape[0]))
+	Path_xyz = path 
+	number= size
+	file_name = Path_xyz+"/" + atom + str(number);
+	print(Path_xyz)
+	print(file_name)
+	
+	lines_of_text =[]
+	for x in matrix:
+		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n";
+		lines_of_text.append(temp_string);
+	with  open("%s.xyz"%file_name, "w") as fh :
+		fh.write(str(number)+ "\n")
+		fh.write("\n")
+		fh.writelines(lines_of_text);
+	
+	return("Done")	 
+def print_xyz_test(size , matrix, atom ):
+	
+	# print("shape: "+ str(shape[0]))
+	
+	lines_of_text =[]
+	for x in matrix:
+		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n";
+		print(temp_string)
+
+	return("Done")	 
+
+
+def print_geometryin(matrix,atom ="Au",path=""):
+	file_name = path + "/geometry.in";
+	print("Creating :" + file_name);
+	lines_of_text=[];
+	for x in matrix:
+		temp_string = "atom"+"  "+str(x[0]) +"   "+str(x[1])+"   "+str(x[2])+"   " +atom + "\n";
+		lines_of_text.append(temp_string);
+	with open(file_name, "w") as fh :
+		fh.writelines(lines_of_text);
+	
+	return "Done";
+
+def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
+	cluster =[];
+	Size = size;
+	Atom = atom;
+	Path_cluster= path
+	print("size : ", size , "atom : ",atom,"r_max",R_max ,"dist = ", Dist_max )
+	for i in range(size):
+ 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max );
+ 		cluster.append(at);
+
+	print_geometryin(cluster,Atom ,Path_cluster);
+	print_xyz(size,cluster, Atom, Path_cluster);
+	return "Done";
+
+def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
+	cluster =[];
+	Size = size;
+	Atom = atom;
+	#Path_cluster= path
+	print("size : ", size , "atom : ",atom,"r_max",R_max ,"dist = ", Dist_max )
+	for i in range(size):
+ 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max );
+ 		cluster.append(at);
+
+	#print_geometryin(cluster,Atom ,Path_cluster);
+	print_xyz_test(size,cluster, Atom);
+	return "Done";
+
+#########################################################
+# qsub is for miztli
+#########################################################
+def create_qsub(size =55, atom ="Au", path =""):
+	file_name_out =  atom + 	str(size) +".out"
+	file_name_sh = path + "/qsub_fhi.sh"
+	print("Creating :" + file_name_sh)
+	
+	text = ["!/bin/bash\n", 
+	"#BSUB -q  q_residual\n",
+	"#BSUB -oo fhi-aims.%J.o\n",
+	"#BSUB -eo fhi-aims.%J.e\n",
+	"#BSUB -n  64\n",
+
+	"module purge\n",
+	"module load use.own\n",
+	"module load fhi-aims/1\n",
+	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
+	#print(text)
+	with open(file_name_sh, "w") as fh: 
+		fh.writelines(text);
+		
+	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+	return "qsub_fhi.sh";
+
+#########################################################
+# runsh is for ela 
+#########################################################
+def create_runsh(size =55, atom ="Au", path =""):
+        file_name_out =  atom + str(size) +".out"
+        file_name_sh = path + "/run.sh"
+        print("Creating :" + file_name_sh)
+        
+        text = ["nohup mpiexec -np 24 -f /home/raet/machinefiles.txt /opt/fhi-aims/bin/aims.171221_1.scalapack.mpi.x < control.in"]
+        #print(text)
+        with  open(file_name_sh, "w") as fh :
+
+        	fh.writelines(text);
+        
+        subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+        #fh.close;
+        return "run.sh";
+
+
+		
+		
+
+
+
+
+def create_directory(size =55, atom ="Au", path ="", add =0):
+	count = add
+	original_size = size;
+	original_atom = atom ;
+	original_path = path;
+	directory_name =original_atom + str(original_size)
+	directory_path = original_path + directory_name	
+	answer = "not changing answer";
+	if count != 0:
+		 directory_path = original_path + directory_name + "_" + str(count)
+		 answer = directory_path
+	if not os.path.exists(directory_path):
+		os.mkdir(directory_path);
+		print("creating folder '{}' ".format(directory_path))
+		answer =  directory_path;	
+	else:
+		print("folder {} already exists".format(directory_path))
+		directory_path=create_directory(original_size, original_atom, original_path, count +1)
+		answer = directory_path;		
+	
+	return answer;	
+
+def check_and_rename(file, add=0):
+    original_file = file
+    if add != 0:
+        split = file.split("_")
+        part_1 = split[0] + "_" + str(add)
+        file = "_".join([part1, split[1]])
+    if not os.path.exists(file):
+    	os.mkdir(file)
+        # save here
+    else:
+        check_and_rename(original_file, add= add + 1)
+
+
+
+
+def create_control_in(path =""):
+	text = [' # DFT details\n',
+	'xc                     pbe\n',
+	'spin                   collinear            # non-collinear spin\n',
+	'relativistic           atomic_zora scalar  # basis set (used zora for single-point, atomic_zora for opt)\n',
+	'charge                 0.\n',
+	'default_initial_moment 1\n',
+	'\n',
+	'# SCF CONVERGENCE\n',
+	'occupation_type        gaussian 0.01         # this is required for metals\n',
+	'charge_mix_param       0.2\n',
+	'sc_accuracy_rho        1E-4\n',
+	'sc_accuracy_eev        5E-3\n',
+	'sc_accuracy_etot       5E-4\n',
+	'sc_iter_limit          1000\n',
+	'\n',
+	'#  Relaxation\n',
+	'relax_geometry               bfgs 5.e-2\n',
+	'hessian_to_restart_geometry  .false.\n',
+	'write_restart_geometry       .true.\n',
+	'\n',
+	'\n',
+	'################################################################################\n',
+	'#\n',
+	'#  FHI-aims code project\n',
+	'#  VB, Fritz-Haber Institut, 2009\n',
+	'#\n',
+	'#  Suggested "light" defaults for Au atom (to be pasted into control.in file)\n',
+	'#  Be sure to double-check any results obtained with these settings for post-processing,\n',
+	'#  e.g., with the "tight" defaults and larger basis sets.\n',
+	'#\n',
+	'################################################################################\n',
+	'  species        Au\n',
+	'#     global species definitions\n',
+	'    nucleus             79\n',
+	'    mass                196.966569\n',
+	'#\n',
+	'    l_hartree           4\n',
+	'#\n',
+	'    cut_pot             3.5  1.5  1.0\n',
+	'    basis_dep_cutoff    1e-4\n',
+	'#\n',
+	'    radial_base         73 5.0\n',
+	'    radial_multiplier   1\n',
+	'    angular_grids specified\n',
+	'      division   0.5066   50\n',
+	'      division   0.9861  110\n',
+	'      division   1.2821  194\n',
+	'      division   1.5344  302\n',
+	'#      division   2.0427  434\n',
+	'#      division   2.1690  590\n',
+	'#      division   2.2710  770\n',
+	'#      division   2.3066  974\n',
+	'#      division   2.7597 1202\n',
+	'#      outer_grid 974\n',
+	'      outer_grid 302\n',
+	'################################################################################\n',
+	'#\n',
+	'#  Definition of "minimal" basis\n',
+	'#\n',
+	'################################################################################\n',
+	'#     valence basis states\n',
+	'    valence      6  s   1.\n',
+	'    valence      5  p   6.\n',
+	'    valence      5  d  10.\n',
+	'    valence      4  f  14.\n',
+	'#     ion occupancy\n',
+	'    ion_occ     6  s   0.\n',
+	'    ion_occ     5  p   6.\n',
+	'    ion_occ     5  d   9.\n',
+	'    ion_occ     4  f   14.\n',
+	'################################################################################\n',
+	'#\n',
+	'#  Suggested additional basis functions. For production calculations, \n',
+	'#  uncomment them one after another (the most important basis functions are\n',
+	'#  listed first).\n',
+	'#\n',
+	'#  Constructed for dimers: 2.10, 2.45, 3.00, 4.00 AA\n',
+	'#\n',
+	'################################################################################\n',
+	'#  "First tier" - max. impr. -161.60  meV, min. impr. -4.53 meV\n',
+	'     ionic 6 p auto\n',
+	'     hydro 4 f 7.4\n',
+	'     ionic 6 s auto\n',
+	'#     hydro 5 g 10\n',
+	'#     hydro 6 h 12.8\n',
+	'     hydro 3 d 2.5\n',
+	'#  "Second tier" - max. impr. -2.46  meV, min. impr. -0.28 meV\n',
+	'#     hydro 5 f 14.8\n',
+	'#     hydro 4 d 3.9\n',
+	'#     hydro 3 p 3.3\n',
+	'#     hydro 1 s 0.45\n',
+	'#     hydro 5 g 16.4\n',
+	'#     hydro 6 h 13.6\n',
+	'#  "Third tier" - max. impr. -0.49  meV, min. impr. -0.09 meV\n',
+	'#     hydro 4 f 5.2\n',
+	'#     hydro 4 d 5\n',
+	'#     hydro 5 g 8\n',
+	'#     hydro 5 p 8.2\n',
+	'#     hydro 6 d 12.4\n',
+	'#     hydro 6 s 14.8\n',
+	'#  Further basis functions: -0.08 meV and below\n',
+	'#     hydro 5 f 18.8\n',
+	'#     hydro 5 g 20\n',
+	'#    hydro 5 g 15.2']
+
+	file_controlin = path + "/control.in"
+	print("Creating :" + file_controlin)
+	with open(file_controlin, "w") as fh:
+	#print(text)
+		fh.writelines(text);
+
+	subprocess.call(["chmod", "754",file_controlin], universal_newlines=True)
+	
+	return "Done";
+
+def get_hostname():
+	host = subprocess.check_output(["hostname"], universal_newlines=True)
+	print(" You're currently in %s"%host)
+	
+
+	return "Done";
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
+
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
+
+
+
+def Cluster_size(N=55, R_ws=1.44):
+	##Revisar bibliografía de esto 
+	dist_max = round(2 * R_ws* math.pow(N , 1/3), 4)
+	print("For ", N , "atoms distance is : ", dist_max)
+	return dist_max;
+
+def Pool_size(N= 55):
+	##Revisar bibliografía de esto 
+	pool = int(math.pow(N,2/3))
+	return pool;
+	
+def Number_ofGenerations(N=55):
+	##Revisar bibliografía de esto 
+	generations = int(math.pow(N,3/2))
+	return generations;
+
+def Convergence(path):
+	file = path+ "/geometry.in.next_step"
+	if not os.path.exists(file):
+		last_dir = str(path.split("/")[-1])
+		command = "rm -r " + last_dir
+		run_command = shlex.split(command)
+		subprocess.call(run_command, universal_newlines = True, shell = True)
+		return False;
+	else:
+		return True;
+
+def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
+	
+
+	atom = Atom 
+	size = Size
+	path = Path
+
+
+	dist_max = Cluster_size(Size, R_ws= 1.44)
+	directory_name =create_directory(size, atom, path);
+	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max);
+	host = get_hostname();
+
+	if host == "basie":
+		run_raw = "./" + create_runsh(size, atom, path= directory_name)
+	elif host == "mn328":
+		run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
+	else :
+		run_raw	 = "./" + create_runsh(size,atom,path= directory_name)	
+
+	run_ready = shlex.split(run_raw)
+	create_control_in(path =directory_name);
+
+	with cd(directory_name):
+		subprocess.call(run_ready,universal_newlines = True, shell = True);
+		grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
+		print(grep_cmd)
+		while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
+			print("Listo")
+        
+
+	return directory_name;
+
+def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
+	
+
+	atom = Atom 
+	size = Size
+	path = Path
+
+
+	dist_max = Cluster_size(Size, R_ws= 1.44)
+	#directory_name =create_directory(size, atom, path);
+	create_cluster_tests(size, atom, path = "", R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max);
+	    
+
+	#return directory_name;
+	
+
+
+def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
+	pool_size = Pool_size(N);
+	dist = Cluster_size(N);
+	gen_path = path + "Gen" + str(generation) 
+	preff = atom + str(N)
+	gen_dir = create_directory(preff, gen_path , add =0) + "/"
+	for x in range(pool_size):
+		Convergence_bool= False
+		while Convergence_bool == False:
+			directory  = create_files(Size = N, Atom = atom, Path = gen_path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
+			Convergence_bool = Convergence(directory)
+		else:
+			print("Run number  '{}' converged".format(x)) 	
+
+
+
