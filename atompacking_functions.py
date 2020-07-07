@@ -380,9 +380,7 @@ def create_control_in(path =""):
 def get_hostname():
 	host = subprocess.check_output(["hostname"], universal_newlines=True)
 	print(" You're currently in %s"%host)
-	
-
-	return "Done";
+	return host
 class cd:
     """Context manager for changing the current working directory"""
     def __init__(self, newPath):
@@ -435,7 +433,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	dist_max = Cluster_size(Size, R_ws= 1.44)
 	directory_name =create_directory(size, atom, path);
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max);
-	host = get_hostname();
+	host = get_hostname()
 
 	if host == "basie":
 		run_raw = "./" + create_runsh(size, atom, path= directory_name)
