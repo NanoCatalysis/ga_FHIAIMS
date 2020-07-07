@@ -3,7 +3,8 @@ import math
 import numpy as np
 import subprocess 
 import shlex
-import os
+import time 
+import os 
 
 def distance_1(atom1,atom2):
     dist = math.sqrt(math.pow(atom1[0] - atom2[0], 2) +
@@ -486,8 +487,34 @@ def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,n
 #			Convergence_bool = Convergence(directory)
 #		else:
 #			print("Run number  '{}' converged".format(x)) 	
+def Proof_convergence(directory_name, path):
+	converged = False 
+	energy = 0 
+	try :		
+		with cd(directory_name):
+			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
+			grep_cmd =['grep','Total energy of the DFT / Hartree-Fock s.c.f. calculation',' {}/nohup.out'.format(directory_name)]	
+			print(grep_cmd)
+			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+			output = process.stdout
+			vec1= output.split("	  :	  ")
+			energy = float(vec1[1].split("eV")[0])
+			print("Energy =" , energy)
+			converged = True
+	except :
+		print("Cluster didn't converged")
+		last_dir = str(path.split("/")[-1])
+		command = "rm -r " + last_dir
+		run_command = shlex.split(command)
+		subprocess.call(run_command, universal_newlines = True, shell = True)
+	return converged, energy	
 
-
+ 	
+def print_wami():
+	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
+	output = process.stdout
+	print("I am here :", output)
+	return None
 
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
 	pool_size = Pool_size(N)
@@ -526,7 +553,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 
 
 def  probability(E_i, E_min, E_max):
-	p_i = (E_i - E_min )/(E_max - E_ min)
+	p_i = (E_i - E_min )/(E_max - E_min)
 	return p_i 
 
 def f_exp(alpha, p_i):
@@ -549,12 +576,12 @@ def kick(athom):
 	x_i = athom[0]
 	y_i = athom[1]
 	z_i= athom[2]
-    theta = random.uniform(0, 2 * math.pi)
-    phi = random.uniform(0, 2 * math.pi)
-    r = random.uniform(r_min,r_max)
-    x = (r * math.cos(theta) * math.sin(phi)) +x_i
-    y = (r * math.sin(theta) * math.sin(phi)) + y_i
-    z = (r * math.cos(phi)) + z_i
-    vector = [x,y,z]
-    return  vector
+	theta = random.uniform(0, 2 * math.pi)
+	phi = random.uniform(0, 2 * math.pi)
+	r = random.uniform(r_min,r_max)
+	x = (r * math.cos(theta) * math.sin(phi)) +x_i
+	y = (r * math.sin(theta) * math.sin(phi)) + y_i
+	z = (r * math.cos(phi)) + z_i
+	vector = [x,y,z]
+	return  vector
 
