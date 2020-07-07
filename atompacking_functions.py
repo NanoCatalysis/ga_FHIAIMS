@@ -437,10 +437,9 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 	if host == "basie":
 		run_raw = "./" + create_runsh(size, atom, path= directory_name)
-	elif host == "mn328":
+	else:
 		run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
-	else :
-		run_raw	 = "./" + create_runsh(size,atom,path= directory_name)	
+	
 
 	run_ready = shlex.split(run_raw)
 	create_control_in(path =directory_name);
