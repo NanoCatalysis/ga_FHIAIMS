@@ -405,12 +405,12 @@ def Cluster_size(N=55, R_ws=1.44):
 def Pool_size(N= 55):
 	##Revisar bibliografía de esto 
 	pool = int(math.pow(N,2/3))
-	return pool;
+	return pool
 	
 def Number_ofGenerations(N=55):
 	##Revisar bibliografía de esto 
 	generations = int(math.pow(N,3/2))
-	return generations;
+	return generations
 
 def Convergence(path):
 	file = path+ "/geometry.in.next_step"
@@ -473,22 +473,59 @@ def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,n
 	
 
 
+#def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
+#	pool_size = Pool_size(N);
+#	dist = Cluster_size(N);
+#	gen_path = path + "Gen" + str(generation) 
+#	preff = atom + str(N)
+#	gen_dir = create_directory(preff, gen_path , add =0) + "/"
+#	for x in range(pool_size):
+#		Convergence_bool= False
+#		while Convergence_bool == False:
+#			directory  = create_files(Size = N, Atom = atom, Path = gen_path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
+#			Convergence_bool = Convergence(directory)
+#		else:
+#			print("Run number  '{}' converged".format(x)) 	
+
+
+
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
-	pool_size = Pool_size(N);
-	dist = Cluster_size(N);
-	gen_path = path + "Gen" + str(generation) 
-	preff = atom + str(N)
-	gen_dir = create_directory(preff, gen_path , add =0) + "/"
+	pool_size = Pool_size(N)
+	dist = Cluster_size(N)
+	energies =[]
+	directories =[]
+	#gen_path = path + "Gen" + str(generation) +"/"
+	#preff = atom + str(N)
+	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
+	text =["path =", path]
+	print_wami()
 	for x in range(pool_size):
-		Convergence_bool= False
-		while Convergence_bool == False:
-			directory  = create_files(Size = N, Atom = atom, Path = gen_path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
-			Convergence_bool = Convergence(directory)
-		else:
-			print("Run number  '{}' converged".format(x)) 	
+
+			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
+			
+			directories.append(directory)
+	time.sleep(60)
+	for x in directories:
+		try:
+			
+			converged, energy = Proof_convergence(directory_name=x, path = path)
+			energies.append(energy)
+			directories.append(x)
+			text_line = ["directory= ", x ,"  energy= ", energy]
+			text.append(text_line)
+		except:
+			energy=0
+			directories.append(x)
+			text_line = ["directory= ", x ,"  energy= ", energy]
+			text.append(text_line)
+
+	with open(path + "Energy.txt", "w") as fh:
+		fh.writelines(text)
 
 
-def  probability (E_i, E_min, E_max):
+
+
+def  probability(E_i, E_min, E_max):
 	p_i = (E_i - E_min )/(E_max - E_ min)
 	return p_i 
 
@@ -506,7 +543,7 @@ def f_lin(p_i):
 
 
 
-def kick( athom):
+def kick(athom):
 	r_min=-1
 	r_max=1
 	x_i = athom[0]
