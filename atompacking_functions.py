@@ -447,10 +447,10 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	with cd(directory_name):
 		print(run_raw)
 		subprocess.call(run_raw,universal_newlines = True, shell = True);
-		grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
-		print(grep_cmd)
-		while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
-			print("Listo")
+		#grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
+		#print(grep_cmd)
+		#while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
+		#print("Listo")
         
 
 	return directory_name;
@@ -491,7 +491,7 @@ def Proof_convergence(directory_name, path):
 	try :		
 		with cd(directory_name):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd =['grep','Total energy of the DFT / Hartree-Fock s.c.f. calculation',' {}/nohup.out'.format(directory_name)]	
+			grep_cmd ='grep Total energy of the DFT / Hartree-Fock s.c.f. calculation  {}/nohup.out'.format(directory_name)	
 			print(grep_cmd)
 			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
 			output = process.stdout
@@ -504,7 +504,7 @@ def Proof_convergence(directory_name, path):
 		last_dir = str(path.split("/")[-1])
 		command = "rm -r " + last_dir
 		run_command = shlex.split(command)
-		subprocess.call(run_command, universal_newlines = True, shell = True)
+		subprocess.call(command, universal_newlines = True, shell = True)
 	return converged, energy	
 
  	
