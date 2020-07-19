@@ -488,13 +488,17 @@ def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,n
 def Proof_convergence(directory_name, path):
 	converged = False 
 	energy = 0 
+	complete_path = path + directory_name
 	try :		
 		with cd(directory_name):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd ='grep Total energy of the DFT / Hartree-Fock s.c.f. calculation  {}/nohup.out'.format(directory_name)	
-			print(grep_cmd)
-			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/Au6.out'.format(directory_name)	
+			#print(grep_cmd)
+			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
+			print(output)
+			ster = process.stderr
+			print(ster)
 			vec1= output.split("	  :	  ")
 			energy = float(vec1[1].split("eV")[0])
 			print("Energy =" , energy)
@@ -502,9 +506,10 @@ def Proof_convergence(directory_name, path):
 	except :
 		print("Cluster didn't converged")
 		last_dir = str(path.split("/")[-1])
-		command = "rm -r " + last_dir
-		run_command = shlex.split(command)
-		subprocess.call(command, universal_newlines = True, shell = True)
+		command = "rm -r " + directory_name
+		print(command)
+		#run_command = shlex.split(command)
+		#subprocess.call(command, universal_newlines = True, shell = True)
 	return converged, energy	
 
  	
@@ -529,7 +534,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 			
 			directories.append(directory)
-	time.sleep(60)
+	#time.sleep(360)
 	for x in directories:
 		try:
 			
