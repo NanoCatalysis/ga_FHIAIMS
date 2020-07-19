@@ -445,7 +445,8 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	create_control_in(path =directory_name);
 
 	with cd(directory_name):
-		subprocess.call(run_ready,universal_newlines = True, shell = True);
+		print(run_raw)
+		subprocess.call(run_raw,universal_newlines = True, shell = True);
 		grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
 		print(grep_cmd)
 		while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
