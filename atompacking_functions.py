@@ -442,7 +442,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	
 
 	run_ready = shlex.split(run_raw)
-	create_control_in(path =directory_name);
+	create_control_in(path =directory_name)
 
 	with cd(directory_name):
 		print(run_raw)
@@ -491,15 +491,15 @@ def Proof_convergence(directory_name, path):
 	complete_path = path + directory_name
 	try :		
 		with cd(directory_name):
-			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/Au6.out'.format(directory_name)	
-			#print(grep_cmd)
-			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+			grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      pools_au6/Au6/Au6.out'.format(directory_name))
+
+			print(grep_cmd)
+			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+
 			output = process.stdout
-			print(output)
-			ster = process.stderr
-			print(ster)
-			vec1= output.split("	  :	  ")
+
+			vec1= output.split("      :       ")
+			print(float(vec1[1].split("eV")[0]))
 			energy = float(vec1[1].split("eV")[0])
 			print("Energy =" , energy)
 			converged = True
