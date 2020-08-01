@@ -186,8 +186,10 @@ def create_qsub(size =55, atom ="Au", path =""):
 	"#BSUB -q  q_residual\n",
 	"#BSUB -oo fhi-aims.%J.o\n",
 	"#BSUB -eo fhi-aims.%J.e\n",
-	"#BSUB -n  64\n",
-
+	# num cores 
+	"#BSUB -n  16\n",
+	#nodos 
+	'#BSUB -m "g1"\n',
 	"module purge\n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
@@ -446,7 +448,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 	with cd(directory_name):
 		print(run_raw)
-		subprocess.call(run_raw,universal_newlines = True, shell = True);
+		subprocess.call(run_raw,universal_newlines = True, shell = True)
 		#grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
 		#print(grep_cmd)
 		#while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
@@ -491,15 +493,15 @@ def Proof_convergence(directory_name, path):
 	complete_path = path + directory_name
 	try :		
 		with cd(directory_name):
-			grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      pools_au6/Au6/Au6.out'.format(directory_name))
-
-			print(grep_cmd)
-			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-
+			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
+			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/Au6.out'.format("./"+directory_name)	
+			#print(grep_cmd)
+			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
-
-			vec1= output.split("      :       ")
-			print(float(vec1[1].split("eV")[0]))
+			print(output)
+			ster = process.stderr
+			print(ster)
+			vec1= output.split("	  :	  ")
 			energy = float(vec1[1].split("eV")[0])
 			print("Energy =" , energy)
 			converged = True
