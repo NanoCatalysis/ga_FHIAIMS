@@ -234,6 +234,7 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 	directory_name =original_atom + str(original_size)
 	directory_path = original_path + directory_name	
 	answer = "not changing answer";
+	print(directory_path)
 	if count != 0:
 		 directory_path = original_path + directory_name + "_" + str(count)
 		 answer = directory_path
@@ -242,7 +243,7 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 		print("creating folder '{}' ".format(directory_path))
 		answer =  directory_path;	
 	else:
-		print("folder {} already exists".format(directory_path))
+		#print("folder {} already exists".format(directory_path))
 		directory_path=create_directory(original_size, original_atom, original_path, count +1)
 		answer = directory_path;		
 	
@@ -398,18 +399,15 @@ class cd:
 
 
 def Cluster_size(N=55, R_ws=1.44):
-	##Revisar bibliografía de esto 
 	dist_max = round(2 * R_ws* math.pow(N , 1/3), 4)
 	print("For ", N , "atoms distance is : ", dist_max)
 	return dist_max;
 
 def Pool_size(N= 55):
-	##Revisar bibliografía de esto 
 	pool = int(math.pow(N,2/3))
 	return pool
 	
 def Number_ofGenerations(N=55):
-	##Revisar bibliografía de esto 
 	generations = int(math.pow(N,3/2))
 	return generations
 
@@ -444,7 +442,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	
 
 	run_ready = shlex.split(run_raw)
-	create_control_in(path =directory_name);
+	create_control_in(path =directory_name)
 
 	with cd(directory_name):
 		print(run_raw)
@@ -493,15 +491,15 @@ def Proof_convergence(directory_name, path):
 	complete_path = path + directory_name
 	try :		
 		with cd(directory_name):
-			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/Au6.out'.format(directory_name)	
-			#print(grep_cmd)
-			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+			grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      pools_au6/Au6/Au6.out'.format(directory_name))
+
+			print(grep_cmd)
+			process =subprocess.run(grep_cmd, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+
 			output = process.stdout
-			print(output)
-			ster = process.stderr
-			print(ster)
-			vec1= output.split("	  :	  ")
+
+			vec1= output.split("      :       ")
+			print(float(vec1[1].split("eV")[0]))
 			energy = float(vec1[1].split("eV")[0])
 			print("Energy =" , energy)
 			converged = True
@@ -516,7 +514,7 @@ def Proof_convergence(directory_name, path):
 
  	
 def print_wami():
-	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
+	process= subprocess.run(["pwd"],  stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
 	print("I am here :", output)
 	return None
@@ -530,7 +528,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#preff = atom + str(N)
 	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
 	text =["path =", path]
-	print_wami()
+	#print_wami() or get_hostname()
 	for x in range(pool_size):
 
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
