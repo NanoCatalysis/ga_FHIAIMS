@@ -2,3 +2,4 @@
 -"generar una funcion run que corra bjobs para saber cuando
 sigue corriendo y cuando no que no dependa de un time muy largo para postergar"
 -"revisar el call rm -r  linea 505"
+-"revisar el loop porque no converge "
