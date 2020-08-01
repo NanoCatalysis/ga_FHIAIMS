@@ -135,40 +135,41 @@ def print_xyz_test(size , matrix, atom ):
 
 
 def print_geometryin(matrix,atom ="Au",path=""):
-	file_name = path + "/geometry.in";
-	print("Creating :" + file_name);
-	lines_of_text=[];
+	file_name = path + "/geometry.in"
+	print("Creating :" + file_name)
+	lines_of_text=[]
 	for x in matrix:
-		temp_string = "atom"+"  "+str(x[0]) +"   "+str(x[1])+"   "+str(x[2])+"   " +atom + "\n";
-		lines_of_text.append(temp_string);
+		temp_string = "atom"+"  "+str(x[0]) +"   "+str(x[1])+"   "+str(x[2])+"   " +atom + "\n"
+		lines_of_text.append(temp_string)
 	with open(file_name, "w") as fh :
-		fh.writelines(lines_of_text);
+		fh.writelines(lines_of_text)
 	
-	return "Done";
+	return "Done"
 
 def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
-	cluster =[];
-	Size = size;
-	Atom = atom;
+	cluster =[]
+	Size = size
+	Atom = atom
 	Path_cluster= path
-	print("size : ", size , "atom : ",atom,"r_max",R_max ,"dist = ", Dist_max )
+	print("size : ", Size , "atom : ",Atom,"r_max",R_max ,"dist = ", Dist_max )
 	for i in range(size):
- 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max );
- 		cluster.append(at);
+ 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max )
+ 		cluster.append(at)
 
-	print_geometryin(cluster,Atom ,Path_cluster);
-	print_xyz(size,cluster, Atom, Path_cluster);
-	return "Done";
+	print_geometryin(cluster,Atom ,Path_cluster)
+	print_xyz(size,cluster, Atom, Path_cluster)
+	return "Done"
 
 def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
-	cluster =[];
-	Size = size;
-	Atom = atom;
+	cluster =[]
+	Size = size
+	Atom = atom
 	#Path_cluster= path
-	print("size : ", size , "atom : ",atom,"r_max",R_max ,"dist = ", Dist_max )
+	print("size : ", Size , "atom : ",Atom,"r_max",R_max ,"dist = ", Dist_max )
 	for i in range(size):
- 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max );
- 		cluster.append(at);
+ 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max )
+ 		cluster.append(at)
+		#i += 1  
 
 	#print_geometryin(cluster,Atom ,Path_cluster);
 	print_xyz_test(size,cluster, Atom)
@@ -234,32 +235,32 @@ def create_runsh(size =55, atom ="Au", path =""):
 
 def create_directory(size =55, atom ="Au", path ="", add =0):
 	count = add
-	original_size = size;
-	original_atom = atom ;
-	original_path = path;
+	original_size = size
+	original_atom = atom 
+	original_path = path
 	directory_name =original_atom + str(original_size)
 	directory_path = original_path + directory_name	
-	answer = "not changing answer";
+	answer = "not changing answer"
 	if count != 0:
 		 directory_path = original_path + directory_name + "_" + str(count)
 		 answer = directory_path
 	if not os.path.exists(directory_path):
-		os.mkdir(directory_path);
+		os.mkdir(directory_path)
 		print("creating folder '{}' ".format(directory_path))
-		answer =  directory_path;	
+		answer =  directory_path	
 	else:
 		print("folder {} already exists".format(directory_path))
 		directory_path=create_directory(original_size, original_atom, original_path, count +1)
-		answer = directory_path;		
+		answer = directory_path		
 	
-	return answer;	
+	return answer	
 
 def check_and_rename(file, add=0):
     original_file = file
     if add != 0:
         split = file.split("_")
         part_1 = split[0] + "_" + str(add)
-        file = "_".join([part1, split[1]])
+        file = "_".join([part_1, split[1]])
     if not os.path.exists(file):
     	os.mkdir(file)
         # save here
@@ -389,6 +390,7 @@ def get_hostname():
 	host = subprocess.check_output(["hostname"], universal_newlines=True)
 	print(" You're currently in %s"%host)
 	return host
+
 class cd:
     """Context manager for changing the current working directory"""
     def __init__(self, newPath):
@@ -426,9 +428,9 @@ def Convergence(path):
 		command = "rm -r " + last_dir
 		run_command = shlex.split(command)
 		subprocess.call(run_command, universal_newlines = True, shell = True)
-		return False;
+		return False
 	else:
-		return True;
+		return True
 
 def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
 	
