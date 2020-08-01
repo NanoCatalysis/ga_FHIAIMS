@@ -379,11 +379,11 @@ def create_control_in(path =""):
 	print("Creating :" + file_controlin)
 	with open(file_controlin, "w") as fh:
 	#print(text)
-		fh.writelines(text);
+		fh.writelines(text)
 
 	subprocess.call(["chmod", "754",file_controlin], universal_newlines=True)
 	
-	return "Done";
+	return "Done"
 
 def get_hostname():
 	host = subprocess.check_output(["hostname"], universal_newlines=True)
@@ -407,7 +407,7 @@ def Cluster_size(N=55, R_ws=1.44):
 	##Revisar bibliografía de esto 
 	dist_max = round(2 * R_ws* math.pow(N , 1/3), 4)
 	print("For ", N , "atoms distance is : ", dist_max)
-	return dist_max;
+	return dist_max
 
 def Pool_size(N= 55):
 	##Revisar bibliografía de esto 
@@ -439,19 +439,19 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 
 	dist_max = Cluster_size(Size, R_ws= 1.44)
-	directory_name =create_directory(size, atom, path
+	directory_name =create_directory(size, atom, path)
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
-	host = get_hostname()
+	host =get_hostname()
 
 	#if host == "basie":
 	#	run_raw = "./" + create_runsh(size, atom, path= directory_name)
 	#else:
 	#	run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
 	#
-
+#
 	#run_ready = shlex.split(run_raw)
 	#create_control_in(path =directory_name)
-
+#
 	#with cd(directory_name):
 	#	print(run_raw)
 	#	subprocess.call(run_raw,universal_newlines = True, shell = True)
@@ -473,7 +473,7 @@ def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,n
 
 	dist_max = Cluster_size(Size, R_ws= 1.44)
 	#directory_name =create_directory(size, atom, path);
-	create_cluster_tests(size, atom, path = "", R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max);
+	create_cluster_tests(size, atom, path = "", R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
 	    
 
 	#return directory_name;
@@ -543,7 +543,8 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 			
 			directories.append(directory)
-	##time.sleep(360)
+	print(directories)		
+	#time.sleep(360)
 	#for x in directories:
 	#	try:
 	#		
@@ -557,7 +558,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#		directories.append(x)
 	#		text_line = ["directory= ", x ,"  energy= ", energy]
 	#		text.append(text_line)
-
+#
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
 
