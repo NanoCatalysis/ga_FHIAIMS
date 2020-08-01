@@ -171,8 +171,8 @@ def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num
  		cluster.append(at);
 
 	#print_geometryin(cluster,Atom ,Path_cluster);
-	print_xyz_test(size,cluster, Atom);
-	return "Done";
+	print_xyz_test(size,cluster, Atom)
+	return "Done"
 
 #########################################################
 # qsub is for miztli
@@ -182,24 +182,30 @@ def create_qsub(size =55, atom ="Au", path =""):
 	file_name_sh = path + "/qsub_fhi.sh"
 	print("Creating :" + file_name_sh)
 	
-	text = ["!/bin/bash\n", 
-	"#BSUB -q  q_residual\n",
-	"#BSUB -oo fhi-aims.%J.o\n",
-	"#BSUB -eo fhi-aims.%J.e\n",
+	text = ["!/bin/bash \n", 
+	"#BSUB -q  q_residual \n",
+	"#BSUB -oo fhi-aims.%J.o \n",
+	"#BSUB -eo fhi-aims.%J.e \n",
 	# num cores 
-	"#BSUB -n  16\n",
+	"#BSUB -n  16 \n",
 	#nodos 
-	'#BSUB -m "g1"\n',
-	"module purge\n",
+	'#BSUB -m "g1" \n',
+	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
 	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
-		fh.writelines(text);
+		fh.writelines(text)
 		
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
-	return "qsub_fhi.sh";
+	return "qsub_fhi.sh"
+###########################################################
+# nueva forma de calculo 
+
+
+
+
 
 #########################################################
 # runsh is for ela 
@@ -213,11 +219,11 @@ def create_runsh(size =55, atom ="Au", path =""):
         #print(text)
         with  open(file_name_sh, "w") as fh :
 
-        	fh.writelines(text);
+        	fh.writelines(text)
         
         subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
         #fh.close;
-        return "run.sh";
+        return "run.sh"
 
 
 		
@@ -234,7 +240,6 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 	directory_name =original_atom + str(original_size)
 	directory_path = original_path + directory_name	
 	answer = "not changing answer";
-	print(directory_path)
 	if count != 0:
 		 directory_path = original_path + directory_name + "_" + str(count)
 		 answer = directory_path
@@ -243,7 +248,7 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 		print("creating folder '{}' ".format(directory_path))
 		answer =  directory_path;	
 	else:
-		#print("folder {} already exists".format(directory_path))
+		print("folder {} already exists".format(directory_path))
 		directory_path=create_directory(original_size, original_atom, original_path, count +1)
 		answer = directory_path;		
 	
@@ -399,15 +404,18 @@ class cd:
 
 
 def Cluster_size(N=55, R_ws=1.44):
+	##Revisar bibliografía de esto 
 	dist_max = round(2 * R_ws* math.pow(N , 1/3), 4)
 	print("For ", N , "atoms distance is : ", dist_max)
 	return dist_max;
 
 def Pool_size(N= 55):
+	##Revisar bibliografía de esto 
 	pool = int(math.pow(N,2/3))
 	return pool
 	
 def Number_ofGenerations(N=55):
+	##Revisar bibliografía de esto 
 	generations = int(math.pow(N,3/2))
 	return generations
 
@@ -431,29 +439,29 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 
 	dist_max = Cluster_size(Size, R_ws= 1.44)
-	directory_name =create_directory(size, atom, path);
-	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max);
+	directory_name =create_directory(size, atom, path)
+	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
 	host = get_hostname()
 
-	if host == "basie":
-		run_raw = "./" + create_runsh(size, atom, path= directory_name)
-	else:
-		run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
-	
+	#if host == "basie":
+	#	run_raw = "./" + create_runsh(size, atom, path= directory_name)
+	#else:
+	#	run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
+	#
 
-	run_ready = shlex.split(run_raw)
-	create_control_in(path =directory_name)
+	#run_ready = shlex.split(run_raw)
+	#create_control_in(path =directory_name)
 
-	with cd(directory_name):
-		print(run_raw)
-		subprocess.call(run_raw,universal_newlines = True, shell = True)
-		#grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
+	#with cd(directory_name):
+	#	print(run_raw)
+	#	subprocess.call(run_raw,universal_newlines = True, shell = True)
+	#	#grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
 		#print(grep_cmd)
 		#while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
 		#print("Listo")
         
 
-	return directory_name;
+	return directory_name
 
 def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
 	
@@ -485,6 +493,7 @@ def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,n
 #			Convergence_bool = Convergence(directory)
 #		else:
 #			print("Run number  '{}' converged".format(x)) 	
+
 def Proof_convergence(directory_name, path):
 	converged = False 
 	energy = 0 
@@ -514,7 +523,7 @@ def Proof_convergence(directory_name, path):
 
  	
 def print_wami():
-	process= subprocess.run(["pwd"],  stdout=subprocess.PIPE, universal_newlines=True) 
+	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
 	print("I am here :", output)
 	return None
@@ -528,7 +537,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#preff = atom + str(N)
 	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
 	text =["path =", path]
-	#print_wami() or get_hostname()
+	print_wami()
 	for x in range(pool_size):
 
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
