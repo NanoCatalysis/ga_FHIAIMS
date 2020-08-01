@@ -439,7 +439,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 
 	dist_max = Cluster_size(Size, R_ws= 1.44)
-	directory_name =create_directory(size, atom, path)
+	directory_name =create_directory(size, atom, path
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
 	host = get_hostname()
 
@@ -543,23 +543,23 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 			
 			directories.append(directory)
-	#time.sleep(360)
-	for x in directories:
-		try:
-			
-			converged, energy = Proof_convergence(directory_name=x, path = path)
-			energies.append(energy)
-			directories.append(x)
-			text_line = ["directory= ", x ,"  energy= ", energy]
-			text.append(text_line)
-		except:
-			energy=0
-			directories.append(x)
-			text_line = ["directory= ", x ,"  energy= ", energy]
-			text.append(text_line)
+	##time.sleep(360)
+	#for x in directories:
+	#	try:
+	#		
+	#		converged, energy = Proof_convergence(directory_name=x, path = path)
+	#		energies.append(energy)
+	#		directories.append(x)
+	#		text_line = ["directory= ", x ,"  energy= ", energy]
+	#		text.append(text_line)
+	#	except:
+	#		energy=0
+	#		directories.append(x)
+	#		text_line = ["directory= ", x ,"  energy= ", energy]
+	#		text.append(text_line)
 
-	with open(path + "Energy.txt", "w") as fh:
-		fh.writelines(text)
+	#with open(path + "Energy.txt", "w") as fh:
+	#	fh.writelines(text)
 
 
 
