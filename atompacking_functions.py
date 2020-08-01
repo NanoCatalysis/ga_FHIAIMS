@@ -186,8 +186,10 @@ def create_qsub(size =55, atom ="Au", path =""):
 	"#BSUB -q  q_residual\n",
 	"#BSUB -oo fhi-aims.%J.o\n",
 	"#BSUB -eo fhi-aims.%J.e\n",
-	"#BSUB -n  64\n",
-
+	# num cores 
+	"#BSUB -n  16\n",
+	#nodos 
+	'#BSUB -m "g1"\n',
 	"module purge\n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
