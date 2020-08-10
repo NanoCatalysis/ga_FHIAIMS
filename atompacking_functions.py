@@ -202,11 +202,36 @@ def create_qsub(size =55, atom ="Au", path =""):
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
 	return "qsub_fhi.sh"
 ###########################################################
-# nueva forma de calculo 
-
-
-
-
+# nueva forma de calculo en archivo init_ga.py
+#
+#def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
+#	file_name_out =  atom + 	str(size) +".out"
+#	file_name_sh = path + "/qsub_fhi.sh"
+#	print("Creating :" + file_name_sh)
+#	
+#	text = ["!/bin/bash \n", 
+#	"#BSUB -q  q_residual \n",
+#	"#BSUB -oo fhi-aims.%J.o \n",
+#	"#BSUB -eo fhi-aims.%J.e \n",
+#	# num cores 
+#	"#BSUB -n  {} \n".format(cores),
+#	#nodos 
+#	'#BSUB -m "{}"\n'.format(node),
+#	"module purge \n",
+#	"module load use.own\n",
+#	"module load fhi-aims/1\n",
+#	"module load python/3.7.6",
+#	"python3 "]
+#	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
+#	#print(text)
+#	with open(file_name_sh, "w") as fh: 
+#		fh.writelines(text)
+#		
+#	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+#	return "qsub_fhi.sh"
+#
+#
+#
 
 #########################################################
 # runsh is for ela 
@@ -443,7 +468,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	dist_max = Cluster_size(Size, R_ws= 1.44)
 	directory_name =create_directory(size, atom, path)
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
-	host =get_hostname()
+	#host =get_hostname()
 
 	#if host == "basie":
 	#	run_raw = "./" + create_runsh(size, atom, path= directory_name)
