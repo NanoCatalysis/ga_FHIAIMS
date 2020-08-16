@@ -562,21 +562,19 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#gen_path = path + "Gen" + str(generation) +"/"
 	#preff = atom + str(N)
 	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
-	text =["path =", path]
+	#text =["path =", path]
 	print_wami()
 	for x in range(pool_size):
-
 		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 		directories.append(directory)
-	
+
 	print(directories)
-	#time.sleep(360)
-	
 	for x in directories:
 		try:
 			run_raw = "./" +x +"/shforrunning.sh"
 			subprocess.call(run_raw,universal_newlines = True, shell = True)
-
+		except :
+			print("Error running")
 	#		converged, energy = Proof_convergence(directory_name=x, path = path)
 	#		energies.append(energy)
 	#		directories.append(x)
@@ -590,9 +588,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
-			return "listo"
-
-
+			
 #def probability(E_i, E_min, E_max):
 #	p_i = (E_i - E_min )/(E_max - E_min)
 #	return p_i 
@@ -624,4 +620,4 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #	y = (r * math.sin(theta) * math.sin(phi)) + y_i
 #	z = (r * math.cos(phi)) + z_i
 #	vector = [x,y,z]
-#	return  vector
+#	return  vector				
