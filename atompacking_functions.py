@@ -158,7 +158,7 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 
 	print_geometryin(cluster,Atom ,Path_cluster)
 	print_xyz(size,cluster, Atom, Path_cluster)
-	create_shforrunning(size, cluster,Path_cluster)
+	create_shforrunning(size,Atom,Path_cluster)
 	return "Done"
 
 def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
