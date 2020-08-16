@@ -567,14 +567,16 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	for x in range(pool_size):
 
 		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
-			
 		directories.append(directory)
+	
 	print(directories)
 	#time.sleep(360)
+	
 	for x in directories:
 		try:
 			run_raw = "./" +x +"/shforrunning.sh"
 			subprocess.call(run_raw,universal_newlines = True, shell = True)
+
 	#		converged, energy = Proof_convergence(directory_name=x, path = path)
 	#		energies.append(energy)
 	#		directories.append(x)
@@ -588,40 +590,38 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
-
-#def run_directories()
-
-
-def  probability(E_i, E_min, E_max):
-	p_i = (E_i - E_min )/(E_max - E_min)
-	return p_i 
-
-def f_exp(alpha, p_i):
-	f_i =math.pow(math.e, -alpha* p_i)	
-	return f_i
-
-def f_tanh( p_i):
-	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
-	return f_i
-
-def f_lin(p_i):
-	f_i = 1- 0.7*p_i
-	return f_i 
+			return "listo"
 
 
-
-def kick(athom):
-	r_min=-1
-	r_max=1
-	x_i = athom[0]
-	y_i = athom[1]
-	z_i= athom[2]
-	theta = random.uniform(0, 2 * math.pi)
-	phi = random.uniform(0, 2 * math.pi)
-	r = random.uniform(r_min,r_max)
-	x = (r * math.cos(theta) * math.sin(phi)) +x_i
-	y = (r * math.sin(theta) * math.sin(phi)) + y_i
-	z = (r * math.cos(phi)) + z_i
-	vector = [x,y,z]
-	return  vector
-
+#def probability(E_i, E_min, E_max):
+#	p_i = (E_i - E_min )/(E_max - E_min)
+#	return p_i 
+#
+#def f_exp(alpha, p_i):
+#	f_i =math.pow(math.e, -alpha* p_i)	
+#	return f_i
+#
+#def f_tanh( p_i):
+#	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
+#	return f_i
+#
+#def f_lin(p_i):
+#	f_i = 1- 0.7*p_i
+#	return f_i 
+#
+#
+#
+#def kick(athom):
+#	r_min=-1
+#	r_max=1
+#	x_i = athom[0]
+#	y_i = athom[1]
+#	z_i= athom[2]
+#	theta = random.uniform(0, 2 * math.pi)
+#	phi = random.uniform(0, 2 * math.pi)
+#	r = random.uniform(r_min,r_max)
+#	x = (r * math.cos(theta) * math.sin(phi)) +x_i
+#	y = (r * math.sin(theta) * math.sin(phi)) + y_i
+#	z = (r * math.cos(phi)) + z_i
+#	vector = [x,y,z]
+#	return  vector
