@@ -159,6 +159,8 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 	print_geometryin(cluster,Atom ,Path_cluster)
 	print_xyz(size,cluster, Atom, Path_cluster)
 	create_shforrunning(size,Atom,Path_cluster)
+	create_control_in(path =Path_cluster)
+
 	return "Done"
 
 def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
@@ -269,7 +271,7 @@ def create_shforrunning(size =55, atom ="Au", path =""):
 	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
-	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
+	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out+"\n"]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
@@ -492,6 +494,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	dist_max = Cluster_size(Size, R_ws= 1.44)
 	directory_name =create_directory(size, atom, path)
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
+	
 	#host =get_hostname()
 
 	#if host == "basie":
@@ -594,7 +597,10 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 			
 			directories.append(directory)
-	print(directories)		
+	print(directories)
+	return directories
+
+
 	#time.sleep(360)
 	#for x in directories:
 	#	try:
@@ -613,7 +619,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
 
-
+def run_directories()
 
 
 def  probability(E_i, E_min, E_max):
