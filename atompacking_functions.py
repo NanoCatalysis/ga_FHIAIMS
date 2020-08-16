@@ -158,6 +158,7 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 
 	print_geometryin(cluster,Atom ,Path_cluster)
 	print_xyz(size,cluster, Atom, Path_cluster)
+	create_shforrunning(size, cluster,Path_cluster)
 	return "Done"
 
 def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
@@ -251,7 +252,30 @@ def create_runsh(size =55, atom ="Au", path =""):
         #fh.close;
         return "run.sh"
 
-
+##########################################################
+def create_shforrunning(size =55, atom ="Au", path =""):
+	file_name_out =  atom + 	str(size) +".out"
+	file_name_sh = path + "/shforrunning.sh"
+	print("Creating :" + file_name_sh)
+	
+	text = ["!/bin/bash \n", 
+	#"#BSUB -q  q_residual \n",
+	#"#BSUB -oo fhi-aims.%J.o \n",
+	#"#BSUB -eo fhi-aims.%J.e \n",
+	## num cores 
+	#"#BSUB -n  16 \n",
+	##nodos 
+	#'#BSUB -m "g1" \n',
+	"module purge \n",
+	"module load use.own\n",
+	"module load fhi-aims/1\n",
+	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
+	#print(text)
+	with open(file_name_sh, "w") as fh: 
+		fh.writelines(text)
+		
+	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+	return "shforrunning.sh"
 		
 		
 
