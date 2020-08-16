@@ -517,36 +517,8 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 	return directory_name
 
-def create_files_tests(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
 	
 
-	atom = Atom 
-	size = Size
-	path = Path
-
-
-	dist_max = Cluster_size(Size, R_ws= 1.44)
-	#directory_name =create_directory(size, atom, path);
-	create_cluster_tests(size, atom, path = "", R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max)
-	    
-
-	#return directory_name;
-	
-
-
-#def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
-#	pool_size = Pool_size(N);
-#	dist = Cluster_size(N);
-#	gen_path = path + "Gen" + str(generation) 
-#	preff = atom + str(N)
-#	gen_dir = create_directory(preff, gen_path , add =0) + "/"
-#	for x in range(pool_size):
-#		Convergence_bool= False
-#		while Convergence_bool == False:
-#			directory  = create_files(Size = N, Atom = atom, Path = gen_path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
-#			Convergence_bool = Convergence(directory)
-#		else:
-#			print("Run number  '{}' converged".format(x)) 	
 
 def Proof_convergence(directory_name, path):
 	converged = False 
@@ -594,17 +566,15 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	print_wami()
 	for x in range(pool_size):
 
-			directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
+		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 			
-			directories.append(directory)
+		directories.append(directory)
 	print(directories)
-	return directories
-
-
 	#time.sleep(360)
-	#for x in directories:
-	#	try:
-	#		
+	for x in directories:
+		try:
+			run_raw = "./" +x +"/shforrunning.sh"
+			subprocess.call(run_raw,universal_newlines = True, shell = True)
 	#		converged, energy = Proof_convergence(directory_name=x, path = path)
 	#		energies.append(energy)
 	#		directories.append(x)
