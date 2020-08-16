@@ -619,7 +619,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
 
-def run_directories()
+#def run_directories()
 
 
 def  probability(E_i, E_min, E_max):
