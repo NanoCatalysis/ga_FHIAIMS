@@ -1,6 +1,7 @@
 import atompacking_functions as af
 import datetime
 import subprocess
+import os 
 def create_py(size =55, atom ="Au", path =""):
 	today = datetime.datetime.now()
 	file_name_out = path + "/run_"+atom + str(size) +".py"
@@ -54,5 +55,26 @@ def run_calc(filename):
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	create_py(size=Size, atom=Atom, path=Path)
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
-	run_calc(file_bsub)
+	run_calc(Path+file_bsub)
 
+
+def create_folder( name ="Au_6", path ="", add =0):
+	count = add
+	original_name = name 
+	original_path = path
+	directory_name =original_name
+	directory_path = original_path + directory_name	
+	answer = "not changing answer"
+	if count != 0:
+		 directory_path = original_path + directory_name + "_" + str(count)
+		 answer = directory_path
+	if not os.path.exists(directory_path):
+		os.mkdir(directory_path)
+		print("creating folder '{}' ".format(directory_path))
+		answer =  directory_path	
+	else:
+		print("folder {} already exists".format(directory_path))
+		directory_path=create_folder( original_name, original_path, count +1)
+		answer = directory_path		
+	
+	return answer	
