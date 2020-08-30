@@ -5,6 +5,7 @@ import subprocess
 import shlex
 import time 
 import os 
+import datetime
 
 def distance_1(atom1,atom2):
     dist = math.sqrt(math.pow(atom1[0] - atom2[0], 2) +
