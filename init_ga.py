@@ -34,7 +34,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
 	"module load python/3.7.6 \n",
-	"python3 run_"+atom + str(size) +".py\n" ]
+	"python3 run_"+atom + str(size) +".py \n" ]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
@@ -49,7 +49,10 @@ def run_calc(filename):
 		run_raw = "./" + filename
 	else:
 		run_raw = "bsub < " + filename
-	subprocess.call(run_raw,universal_newlines = True, shell = True)	
+	#subprocess.call(run_raw,universal_newlines = True, shell = True)
+	process= subprocess.run(run_raw, check=True, stdout=subprocess.PIPE, universal_newlines=True) 
+	output = process.stdout
+	print(output)	
 
 
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
