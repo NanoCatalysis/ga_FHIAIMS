@@ -163,20 +163,7 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 
 	return "Done"
 
-def create_cluster_tests(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7):
-	cluster =[]
-	Size = size
-	Atom = atom
-	#Path_cluster= path
-	print("size : ", Size , "atom : ",Atom,"r_max",R_max ,"dist = ", Dist_max )
-	for i in range(size):
- 		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max )
- 		cluster.append(at)
-		#i += 1  
 
-	#print_geometryin(cluster,Atom ,Path_cluster);
-	print_xyz_test(size,cluster, Atom)
-	return "Done"
 
 #########################################################
 # qsub is for miztli
