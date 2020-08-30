@@ -52,7 +52,7 @@ def run_calc(filename):
 	subprocess.call(run_raw,universal_newlines = True, shell = True)
 	#process= subprocess.run(run_raw, check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	#output = process.stdout
-	print(output)	
+	#print(output)	
 
 
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
