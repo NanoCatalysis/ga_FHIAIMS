@@ -667,6 +667,7 @@ def run_calc(filename):
 
 
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
+	Path = create_folder(name=Atom+str(Size), path= Path)
 	create_py(size=Size, atom=Atom, path=Path)
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
 	print(file_bsub)
