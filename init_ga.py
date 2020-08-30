@@ -55,7 +55,8 @@ def run_calc(filename):
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	create_py(size=Size, atom=Atom, path=Path)
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
-	run_calc(Path+file_bsub)
+	print(file_bsub)
+	run_calc(file_bsub)
 
 
 def create_folder( name ="Au_6", path ="", add =0):
