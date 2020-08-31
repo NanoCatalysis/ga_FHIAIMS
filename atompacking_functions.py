@@ -446,7 +446,7 @@ class cd:
 
 def Cluster_size(N=55, R_ws=1.44):
 	##Revisar bibliografía de esto 
-	dist_max = round(2 * R_ws* math.pow(N , 1/3), 4)
+	dist_max = round(2 * R_ws* math.pow(int(N) , 1/3), 4)
 	print("For ", N , "atoms distance is : ", dist_max)
 	return dist_max
 
@@ -543,6 +543,7 @@ def print_wami():
 	return None
 
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
+	N = int (N)
 	pool_size = Pool_size(N)
 	dist = Cluster_size(N)
 	energies =[]
