@@ -452,12 +452,12 @@ def Cluster_size(N=55, R_ws=1.44):
 
 def Pool_size(N= 55):
 	##Revisar bibliografía de esto 
-	pool = int(math.pow(N,2/3))
+	pool = int(math.pow(int(N),2/3))
 	return pool
 	
 def Number_ofGenerations(N=55):
 	##Revisar bibliografía de esto 
-	generations = int(math.pow(N,3/2))
+	generations = int(math.pow(int(N),3/2))
 	return generations
 
 def Convergence(path):
