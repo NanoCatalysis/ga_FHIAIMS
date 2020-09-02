@@ -247,7 +247,7 @@ def create_shforrunning(size =55, atom ="Au", path =""):
 	file_name_out =  atom + 	str(size) +".out"
 	file_name_sh = path + "/shforrunning.sh"
 	print("Creating :" + file_name_sh)
-	
+	root_dir = print_wami()
 	text = ["#!/bin/bash \n", 
 	#"#BSUB -q  q_residual \n",
 	#"#BSUB -oo fhi-aims.%J.o \n",
@@ -259,7 +259,7 @@ def create_shforrunning(size =55, atom ="Au", path =""):
 	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
-	"mpirun aims.171221_1.scalapack.mpi.x < "+ path +"/control.in > " + path+"/" +file_name_out+"\n"]
+	"mpirun aims.171221_1.scalapack.mpi.x < "+ root_dir+path +"/control.in > " + root_dir + path+"/" +file_name_out+"\n"]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
