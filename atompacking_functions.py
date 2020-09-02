@@ -560,7 +560,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	print(directories)
 	for x in directories:
 		try:
-			run_raw =  x +"/shforrunning.sh"
+			run_raw =  "./"x +"/shforrunning.sh"
 			with cd(x):
 				print(run_raw)
 				subprocess.call(run_raw,universal_newlines = True, shell = True)
