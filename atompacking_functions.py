@@ -248,7 +248,7 @@ def create_shforrunning(size =55, atom ="Au", path =""):
 	file_name_sh = path + "/shforrunning.sh"
 	print("Creating :" + file_name_sh)
 	
-	text = ["!/bin/bash \n", 
+	text = ["#!/bin/bash \n", 
 	#"#BSUB -q  q_residual \n",
 	#"#BSUB -oo fhi-aims.%J.o \n",
 	#"#BSUB -eo fhi-aims.%J.e \n",
