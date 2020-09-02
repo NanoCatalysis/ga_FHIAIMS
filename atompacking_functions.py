@@ -540,7 +540,8 @@ def print_wami():
 	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
 	print("I am here :", output)
-	return output
+	a_string = output.rstrip("\n")
+	return a_string
 
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
 	N = int (N)
