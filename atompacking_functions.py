@@ -540,7 +540,7 @@ def print_wami():
 	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
 	print("I am here :", output)
-	return None
+	return output
 
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0):
 	N = int (N)
@@ -552,7 +552,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#preff = atom + str(N)
 	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
 	#text =["path =", path]
-	print_wami()
+	root_dir = print_wami()
 	for x in range(pool_size):
 		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 		directories.append(directory)
@@ -560,7 +560,7 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	print(directories)
 	for x in directories:
 		try:
-			run_raw =  x +"/shforrunning.sh"
+			run_raw = root_dir + x +"/shforrunning.sh"
 			with cd(x):
 				print(run_raw)
 				subprocess.call(run_raw,universal_newlines = True, shell = True)
