@@ -26,7 +26,9 @@ for x in range(pool_size):
 	directory= af.create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 	directories.append(directory)
 
-print("\n directories : ", directories)
+print("\n directories : ")
+for x in directories:
+    print(x , "\n ")
 for x in directories:
 	try:
 		run_raw = "./" +x +"/shforrunning.sh"
