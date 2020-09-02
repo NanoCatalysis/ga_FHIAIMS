@@ -559,8 +559,11 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 		directories.append(directory)
 
 	print(directories)
+	print_wami
 	for x in directories:
 		try:
+			print("before running")
+			print_wami
 			run_raw =  "./"+ x +"/shforrunning.sh"
 			#with cd(x):
 			#	print(run_raw)
