@@ -660,7 +660,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
 
-	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+	subprocess.call(["chmod", "777",file_name_sh], universal_newlines=True)
 	return file_name_sh
 
 def run_calc(filename):    
