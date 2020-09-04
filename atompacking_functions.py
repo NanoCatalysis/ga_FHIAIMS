@@ -642,7 +642,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	file_name_sh =  "qsub_fhi.sh"
 	print("Creating :" + file_name_sh)
 
-	text = ["!/bin/bash \n", 
+	text = ["#!/bin/bash \n", 
 	"#BSUB -q  q_residual \n",
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
