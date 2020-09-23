@@ -39,7 +39,7 @@ time.sleep(20)
 for x in directories:
 	path_dum = os.path.join(THIS_FOLDER, x)
 	dir_list = os.listdir(path_dum)  
-	print("Files and directories in '", path_dum, "' :")  
+	print("Files and directories in '", path_dum, "' :", dir_list)  
   
 
 for x in directories:
