@@ -40,9 +40,10 @@ for x in directories:
 	path_dum = os.path.join(THIS_FOLDER, x)
 	dir_list = os.listdir(path_dum)  
 	print("Files and directories in '", path_dum, "' :", dir_list)
-	if os.path.exists(path_dum +'/shforrunning.sh') == True: 
+	file_running = path_dum +'/shforrunning.sh'
+	if os.path.exists(file_running) == True: 
 		try:
-			run_raw = "." +path_dum +"/shforrunning.sh"
-			subprocess.call(run_raw,universal_newlines = True, shell = True)
+			#run_raw = "." + file_running
+			subprocess.call(file_running,universal_newlines = True, shell = True)
 		except :
 			print("Error running")
