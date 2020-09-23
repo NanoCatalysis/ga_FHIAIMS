@@ -546,7 +546,6 @@ def print_wami():
 	return a_string
 
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = 16):
-	N = int (N)
 	pool_size = Pool_size(N)
 	dist = Cluster_size(N)
 	energies =[]
@@ -555,25 +554,30 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#preff = atom + str(N)
 	#gen_dir = create_directory(preff, gen_path , add =0) + "/"
 	#text =["path =", path]
-	root_dir = print_wami()
 	for x in range(pool_size):
-		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist, cores =cores)
+		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 		directories.append(directory)
 
-	print(directories)
-	print_wami()
-	for x in directories:
-		try:
-			print("before running")
-			print_wami()
-			run_raw =  "./"+ x +"/shforrunning.sh"
-			with cd(x):
-				print(run_raw)
-				subprocess.call(run_raw,universal_newlines = True, shell = True)
+	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+	
+	print("\n directories : ")
 
-			subprocess.call(run_raw,universal_newlines = True, shell = True)
-		except :
-			print("Error running")
+	for x in directories:
+	    print(x , "\n ")
+
+	#time.sleep(20)	
+
+	for x in directories:
+		path_dum = os.path.join(THIS_FOLDER, x)
+		dir_list = os.listdir(path_dum)  
+		print("Files and directories in '", path_dum, "' :", dir_list)
+		file_running = path_dum +'/shforrunning.sh'
+		if os.path.exists(file_running) == True: 
+			try:
+				#run_raw = "." + file_running
+				subprocess.call(file_running,universal_newlines = True, shell = True)
+			except :
+				print("Error running")
 	#		converged, energy = Proof_convergence(directory_name=x, path = path)
 	#		energies.append(energy)
 	#		directories.append(x)
