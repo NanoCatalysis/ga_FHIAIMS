@@ -153,7 +153,7 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 	Atom = atom
 	Path_cluster= path
 	print("size : ", Size , "atom : ",Atom,"r_max",R_max ,"dist = ", Dist_max )
-	for i in range(size):
+	for i in range(int(size)):
  		at=generate_atom(cluster,r_min = R_min,r_max = R_max , dist_max = Dist_max )
  		cluster.append(at)
 
