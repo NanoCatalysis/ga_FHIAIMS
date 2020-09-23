@@ -3,6 +3,7 @@
 #created on  2020-08-31 14:13:03.484281 
 import atompacking_functions as af 
 import subprocess
+import os 
 
 N= 6
 atom = "Au"
@@ -29,6 +30,8 @@ for x in range(pool_size):
 print("\n directories : ")
 for x in directories:
     print(x , "\n ")
+for x in directories:
+	os.system('ls {}-lS'.format(x))
 for x in directories:
 	try:
 		run_raw = "./" +x +"/shforrunning.sh"
