@@ -109,19 +109,19 @@ def print_xyz(size , matrix, atom , path=""):
 	# print("shape: "+ str(shape[0]))
 	Path_xyz = path 
 	number= size
-	file_name = Path_xyz+"/" + atom + str(number);
+	file_name = Path_xyz+"/" + atom + str(number)
 	print(Path_xyz)
 	print(file_name)
 	
 	lines_of_text =[]
 	for x in matrix:
 		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n";
-		lines_of_text.append(temp_string);
+		lines_of_text.append(temp_string)
 	with  open("%s.xyz"%file_name, "w") as fh :
 		fh.write(str(number)+ "\n")
 		fh.write("\n")
-		fh.writelines(lines_of_text);
-	
+		fh.writelines(lines_of_text)
+		fh.close()
 	return("Done")	 
 def print_xyz_test(size , matrix, atom ):
 	
@@ -144,7 +144,7 @@ def print_geometryin(matrix,atom ="Au",path=""):
 		lines_of_text.append(temp_string)
 	with open(file_name, "w") as fh :
 		fh.writelines(lines_of_text)
-	
+		fh.close()
 	return "Done"
 
 def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7,cores =16):
@@ -263,7 +263,7 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
-		
+		fh.close()	
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
 	return "shforrunning.sh"
 		
@@ -420,6 +420,7 @@ def create_control_in(path =""):
 	with open(file_controlin, "w") as fh:
 	#print(text)
 		fh.writelines(text)
+		fh.close()
 
 	subprocess.call(["chmod", "754",file_controlin], universal_newlines=True)
 	

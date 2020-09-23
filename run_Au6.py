@@ -4,7 +4,7 @@
 import atompacking_functions as af 
 import subprocess
 import os 
-
+import time
 N= 6
 atom = "Au"
 path = "pools_au6/Au6_6"
@@ -30,6 +30,8 @@ for x in range(pool_size):
 print("\n directories : ")
 for x in directories:
     print(x , "\n ")
+
+time.sleep(20)	
 for x in directories:
 	os.system('ls {}-lS'.format(x))
 for x in directories:
