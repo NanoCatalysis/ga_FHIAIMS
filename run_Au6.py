@@ -27,13 +27,21 @@ for x in range(pool_size):
 	directory= af.create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
 	directories.append(directory)
 
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+my_file = os.path.join(THIS_FOLDER, 'myfile.txt')
 print("\n directories : ")
+
 for x in directories:
     print(x , "\n ")
 
 time.sleep(20)	
+
 for x in directories:
-	os.system('ls {}-lS'.format(x))
+	path_dum = os.path.join(THIS_FOLDER, x)
+	dir_list = os.listdir(path_dum)  
+	print("Files and directories in '", path_dum, "' :")  
+  
+
 for x in directories:
 	try:
 		run_raw = "./" +x +"/shforrunning.sh"
