@@ -747,7 +747,7 @@ def run_dirs(path =""):
 
 		with cd(s):
 
-			process =subprocess.run('./shforrunning.sh', check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+			process =subprocess.run('./shforrunning.sh', shell=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
 			print(output)
 			ster = process.stderr
