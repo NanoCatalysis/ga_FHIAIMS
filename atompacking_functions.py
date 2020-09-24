@@ -750,10 +750,10 @@ def run_dirs(path =""):
 		print("file for running",my_file, '\n')
 		#grep_cmd =''.format(""+)	
 		#print(grep_cmd)
-		#process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-		#output = process.stdout
-		#print(output)
-		#ster = process.stderr
-		#print(ster)
-		process =subprocess.call(my_file, check=True, universal_newlines=True)
+		process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+		output = process.stdout
+		print(output)
+		ster = process.stderr
+		print(ster)
+		#process =subprocess.call(my_file, universal_newlines=True)
 		
