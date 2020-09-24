@@ -447,18 +447,18 @@ class cd:
 
 
 def Cluster_size(N=55, R_ws=1.44):
-	##Revisar bibliografía de esto 
+	##Revisar bibliografia de esto 
 	dist_max = round(2 * R_ws* math.pow(int(N) , 1/3), 4)
 	print("For ", N , "atoms distance is : ", dist_max)
 	return dist_max
 
 def Pool_size(N= 55):
-	##Revisar bibliografía de esto 
+	##Revisar bibliografia de esto 
 	pool = int(math.pow(int(N),2/3))
 	return pool
 	
 def Number_ofGenerations(N=55):
-	##Revisar bibliografía de esto 
+	##Revisar bibliografia de esto 
 	generations = int(math.pow(int(N),3/2))
 	return generations
 
