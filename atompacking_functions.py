@@ -715,9 +715,11 @@ def create_folder( name ="Au_6", path ="", add =0):
 	return answer	 			
 
 
-def create_all_file(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
+def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
+	dirs = create_pool(N= Size, atom = Atom, path =Path, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
 	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
+	
 	print(file_bsub)
 		
