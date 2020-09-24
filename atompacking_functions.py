@@ -548,7 +548,6 @@ def print_wami():
 def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = 16):
 	pool_size = Pool_size(N)
 	dist = Cluster_size(N)
-	energies =[]
 	directories =[]
 	#gen_path = path + "Gen" + str(generation) +"/"
 	#preff = atom + str(N)
@@ -566,18 +565,23 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	    print(x , "\n ")
 
 	#time.sleep(20)	
-
+	used_directories =[]
 	for x in directories:
 		path_dum = os.path.join(THIS_FOLDER, x)
 		dir_list = os.listdir(path_dum)  
 		print("Files and directories in '", path_dum, "' :", dir_list)
 		file_running = path_dum +'/shforrunning.sh'
 		if os.path.exists(file_running) == True: 
-			try:
-				#run_raw = "." + file_running
-				subprocess.call(file_running,universal_newlines = True, shell = True)
-			except :
-				print("Error running")
+			print("sh created")
+			used_directories.append(path_dum)
+	return used_directories		
+
+
+	#		try:
+	#			#run_raw = "." + file_running
+	#			subprocess.call(file_running,universal_newlines = True, shell = True)
+	#		except :
+	#			print("Error running")
 	#		converged, energy = Proof_convergence(directory_name=x, path = path)
 	#		energies.append(energy)
 	#		directories.append(x)
@@ -709,3 +713,11 @@ def create_folder( name ="Au_6", path ="", add =0):
 		answer = directory_path		
 	
 	return answer	 			
+
+
+def create_all_file(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
+	Path = create_folder(name=Atom+str(Size), path= Path)
+	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
+	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
+	print(file_bsub)
+		
