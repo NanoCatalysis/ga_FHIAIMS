@@ -664,7 +664,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
 	"module load python/3.7.6 \n",
-	"python3 run_"+atom + str(size) +".py \n" ]
+	"python3 {}/run_{}.py \n".format(path, atom + str(size))]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
