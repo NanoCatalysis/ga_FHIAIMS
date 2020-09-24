@@ -654,7 +654,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	#file_name_out =  atom + 	str(size) +".out"
 	file_name_sh =  path+"/" + "qsub_fhi.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-	complete_path = folder = os.path.join(THIS_FOLDER,path)
+	complete_path =  os.path.join(THIS_FOLDER,path)
 	print("Creating :" + file_name_sh)
 
 	text = ["#!/bin/bash \n", 
@@ -746,7 +746,7 @@ def run_dirs(path =""):
 		THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 		folder = os.path.join(THIS_FOLDER,x)
 		my_file = os.path.join(folder, './shforrunning.sh')
-		print(my_file)
+		print("file for running",my_file, '\n')
 		#grep_cmd =''.format(""+)	
 		#print(grep_cmd)
 		process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
