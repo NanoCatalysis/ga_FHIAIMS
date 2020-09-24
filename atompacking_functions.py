@@ -698,10 +698,10 @@ def create_folder( name ="Au_6", path ="", add =0):
 	original_name = name 
 	original_path = path
 	directory_name =original_name
-	directory_path = original_path + directory_name	
+	directory_path = original_path +"/"+ directory_name	
 	answer = "not changing answer"
 	if count != 0:
-		 directory_path = original_path + directory_name + "_" + str(count)
+		 directory_path = original_path+"/" + directory_name + "_" + str(count)
 		 answer = directory_path
 	if not os.path.exists(directory_path):
 		os.mkdir(directory_path)
@@ -710,7 +710,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 	else:
 		print("folder {} already exists".format(directory_path))
 		directory_path=create_folder( original_name, original_path, count +1)
-		answer = directory_path	+"/"	
+		answer = directory_path		
 	
 	return answer	 			
 
