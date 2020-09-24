@@ -747,10 +747,11 @@ def run_dirs(path =""):
 		s= x.replace('\n', '')
 
 		with cd(s):
-			process =subprocess.run('./shforrunning.sh', shell=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-			output = process.stdout
-			print("output: ", output)
-			ster = process.stderr
-			print("ster: ", ster)
+			subprocess.call('./shforrunning.sh',universal_newlines = True, shell = True)
+			#process =subprocess.run('./shforrunning.sh', shell=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+			#output = process.stdout
+			#print("output: ", output)
+			#ster = process.stderr
+			#print("ster: ", ster)
 			#process =subprocess.call(my_file, universal_newlines=True)
 		
