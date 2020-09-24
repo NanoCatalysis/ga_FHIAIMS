@@ -718,8 +718,27 @@ def create_folder( name ="Au_6", path ="", add =0):
 def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
 	dirs = create_pool(N= Size, atom = Atom, path =Path, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
-	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
-	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
+	print("Creating : file of directories" )
+	file_dirs= Path + "/file_dirs.txt"
+	with open(file_dirs, "w") as fh:
+	#print(text)
+		fh.writelines(dirs)
+		fh.close()
 	
+	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
+	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)	
 	print(file_bsub)
 		
+def run_dirs(directories= []):
+	for x in directories:
+		THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+		folder = os.path.join(THIS_FOLDER,x)
+		my_file = os.path.join(folder, '/shforrunning.sh')
+		#grep_cmd =''.format(""+)	
+		#print(grep_cmd)
+		process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+		output = process.stdout
+		print(output)
+		ster = process.stderr
+		print(ster)
+
