@@ -279,7 +279,7 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 	original_atom = atom 
 	original_path = path
 	directory_name =original_atom + str(original_size)
-	directory_path = original_path + directory_name	
+	directory_path = original_path+"/" + directory_name	
 	answer = "not changing answer"
 	if count != 0:
 		 directory_path = original_path + directory_name + "_" + str(count)
@@ -717,6 +717,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 
 def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
+	print("Path :", Path)
 	dirs = create_pool(N= Size, atom = Atom, path =Path, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
 	print("Creating : file of directories" )
 	file_dirs= Path + "/file_dirs.txt"
