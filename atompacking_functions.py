@@ -746,6 +746,7 @@ def run_dirs(path =""):
 		THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 		folder = os.path.join(THIS_FOLDER,x)
 		my_file = os.path.join(folder, '/shforrunning.sh')
+		print(my_file)
 		#grep_cmd =''.format(""+)	
 		#print(grep_cmd)
 		process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
