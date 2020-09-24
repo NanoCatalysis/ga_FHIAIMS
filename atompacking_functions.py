@@ -24,13 +24,13 @@ def generate_coordinates(r_min=0,r_max=1):
     y = (r * math.sin(theta) * math.sin(phi))
     z = (r * math.cos(phi))
     vector = [x,y,z]
-    return vector;
+    return vector
 
 #This Function sorts atoms 
 def select_atom(atoms =[]):
     at = np.array(atoms)
-    shape = np.shape(at);
-    dim = shape[1];
+    shape = np.shape(at)
+    dim = shape[1]
     number =shape[0]
     if number >=2 :
         rm = random.randint(0,number-1)
@@ -39,27 +39,27 @@ def select_atom(atoms =[]):
         
     else :    
         selection = atoms[0]
-    return selection;
+    return selection
 
 def add_coordinates(vector1, vector2):
-    result =[];
+    result =[]
     if vector1 ==[]:
         result =vector2
         
     else:
         for i in range(len(vector2)):
             result = [vector1[i] + vector2[i] for i in range(len(vector2))];
-    return result;
+    return result
         
 def proof_distance(atom1, atom2, r_min=0,r_max=10):
     distance = distance_1(atom1, atom2)
-    condition = None;
+    condition = None
     if distance <= r_min:
-        condition = False;
+        condition = False
     elif distance >= r_max:
-        condition = False;
+        condition = False
     else:
-        condition = True;
+        condition = True
     return condition;       
 
 
@@ -68,17 +68,17 @@ def proof_distance(atom1, atom2, r_min=0,r_max=10):
 
 
 def generate_atom (atoms=[],r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7):
-    condition =0;
+    condition =0
     #print("r_max ", r_max, " dist_max", dist_max)
     if atoms == [] :
-        at1 =[0,0,0];
+        at1 =[0,0,0]
     else :
         temporal_atom = None 
         num_atoms = len(atoms)
         while condition ==0:
-            random_coordinates =generate_coordinates(r_min,r_max);
-            base_atom = select_atom(atoms);
-            temporal_atom = add_coordinates(base_atom,random_coordinates);
+            random_coordinates =generate_coordinates(r_min,r_max)
+            base_atom = select_atom(atoms)
+            temporal_atom = add_coordinates(base_atom,random_coordinates)
             at = np.array(atoms)
             number = at.ndim
             if number !=1 :
@@ -86,23 +86,23 @@ def generate_atom (atoms=[],r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, d
                 for atom in atoms:
                     condition =proof_distance(atom, temporal_atom,dist_min ,dist_max)
                     if condition == 0:
-                        break;
+                        break
                     else:
-                        condition = 1;
+                        condition = 1
             else:
                 atom = atoms
                 condition =proof_distance(atom, temporal_atom,dist_min ,dist_max)
                 if condition == 0:
-                    break;
+                    break
                 else:
-                    condition = 1;
+                    condition = 1
           
                     
         at1 = temporal_atom;             
 
                        
 
-    return at1;
+    return at1
 
 def print_xyz(size , matrix, atom , path=""):
 	
@@ -115,7 +115,7 @@ def print_xyz(size , matrix, atom , path=""):
 	
 	lines_of_text =[]
 	for x in matrix:
-		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n";
+		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n"
 		lines_of_text.append(temp_string)
 	with  open("%s.xyz"%file_name, "w") as fh :
 		fh.write(str(number)+ "\n")
@@ -129,7 +129,7 @@ def print_xyz_test(size , matrix, atom ):
 	
 	lines_of_text =[]
 	for x in matrix:
-		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n";
+		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n"
 		print(temp_string)
 
 	return("Done")	 
@@ -667,8 +667,8 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	#nodos 
 	#'#BSUB -m "{}"\n'.format(node),
 	#"module purge \n",
-	#"module load use.own\n",
-	#"module load fhi-aims/1\n",
+	"module load use.own\n",
+	"module load fhi-aims/1\n",
 	#"module load python/3.7.6 \n",
 	"python3 {}/run_{}.py \n".format(complete_path,atom + str(size))]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
@@ -747,11 +747,10 @@ def run_dirs(path =""):
 		s= x.replace('\n', '')
 
 		with cd(s):
-
 			process =subprocess.run('./shforrunning.sh', shell=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
-			print(output)
+			print("output: ", output)
 			ster = process.stderr
-			print(ster)
+			print("ster: ", ster)
 			#process =subprocess.call(my_file, universal_newlines=True)
 		
