@@ -722,7 +722,9 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	file_dirs= Path + "/file_dirs.txt"
 	with open(file_dirs, "w") as fh:
 	#print(text)
-		fh.writelines(dirs)
+		for x in dirs:
+			fh.write(x + "\n")
+		#fh.writelines(dirs)
 		fh.close()
 	
 	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
