@@ -743,9 +743,10 @@ def run_dirs(path =""):
 		file1.close()
 
 	for x in directories:
+		x.replace('\n', '')
 		THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 		folder = os.path.join(THIS_FOLDER,x)
-		my_file = os.path.join(folder, './shforrunning.sh')
+		my_file = os.path.join(folder, '/shforrunning.sh')
 		print("file for running",my_file, '\n')
 		#grep_cmd =''.format(""+)	
 		#print(grep_cmd)
