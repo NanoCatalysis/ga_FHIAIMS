@@ -738,7 +738,7 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	print(file_bsub)
 		
 def run_dirs(path =""):
-	with  open(path + 'file_dirs.txt', 'r') as file1:
+	with  open(path + '/file_dirs.txt', 'r') as file1:
 		directories = file1.readlines()
 		file1.close()
 
