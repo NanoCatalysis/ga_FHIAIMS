@@ -277,9 +277,9 @@ def create_directory(size =55, atom ="Au", path ="", add =0):
 	count = add
 	original_size = size
 	original_atom = atom 
-	original_path = path
+	original_path = path+"/" 
 	directory_name =original_atom + str(original_size)
-	directory_path = original_path+"/" + directory_name	
+	directory_path = original_path+ directory_name	
 	answer = "not changing answer"
 	if count != 0:
 		 directory_path = original_path + directory_name + "_" + str(count)
