@@ -744,16 +744,13 @@ def run_dirs(path =""):
 
 	for x in directories:
 		x.replace('\n', '')
-		#THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-		#folder = os.path.join(path,x)
-		my_file = os.path.join(x, '/shforrunning.sh')
-		print("file for running",my_file, '\n')
-		#grep_cmd =''.format(""+)	
-		#print(grep_cmd)
-		process =subprocess.run(my_file, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-		output = process.stdout
-		print(output)
-		ster = process.stderr
-		print(ster)
-		#process =subprocess.call(my_file, universal_newlines=True)
+
+		with cd(x):
+
+			process =subprocess.run('/shforrunning.sh', check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+			output = process.stdout
+			print(output)
+			ster = process.stderr
+			print(ster)
+			#process =subprocess.call(my_file, universal_newlines=True)
 		
