@@ -743,9 +743,9 @@ def run_dirs(path =""):
 		file1.close()
 
 	for x in directories:
-		x.replace('\n', '')
+		s= x.replace('\n', '')
 
-		with cd(x):
+		with cd(s):
 
 			process =subprocess.run('/shforrunning.sh', check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
