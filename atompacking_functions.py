@@ -658,7 +658,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	print("Creating :" + file_name_sh)
 
 	text = ["#!/bin/bash +H \n",
-	'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
+	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
 	"#BSUB -q  q_residual \n",
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
@@ -669,6 +669,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	#"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
+	"module load mpi/intel-2017_update3 \n",
 	#"module load python/3.7.6 \n",
 	"python3 {}/run_{}.py \n".format(complete_path,atom + str(size))]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
