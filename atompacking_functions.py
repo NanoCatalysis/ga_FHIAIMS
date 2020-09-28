@@ -657,7 +657,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	complete_path =  os.path.join(THIS_FOLDER,path)
 	print("Creating :" + file_name_sh)
 
-	text = ["#!/bin/bash +H \n",
+	text = ["#!/bin/bash \n",
 	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
 	"#BSUB -q  q_residual \n",
 	"#BSUB -oo fhi-aims.%J.o \n",
@@ -665,7 +665,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	# num cores 
 	"#BSUB -n  {} \n".format(cores),
 	#nodos 
-	#'#BSUB -m "{}"\n'.format(node),
+	'#BSUB -m "{}"\n'.format(node),
 	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
