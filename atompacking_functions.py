@@ -257,9 +257,9 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	#"#BSUB -n  16 \n",
 	##nodos 
 	#'#BSUB -m "g1" \n',
-	"module purge \n",
-	"module load use.own\n",
-	"module load fhi-aims/1\n",
+	#"module purge \n",
+	#"module load use.own\n",
+	#"module load fhi-aims/1\n",
 	"mpirun -np" + str(cores)+ "aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
@@ -666,10 +666,10 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	"#BSUB -n  {} \n".format(cores),
 	#nodos 
 	#'#BSUB -m "{}"\n'.format(node),
-	#"module purge \n",
+	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
-	"module load mpi/intel-2017_update3 \n",
+	"module load mpi/intel-2017_update3 \n",		
 	#"module load python/3.7.6 \n",
 	"python3 {}/run_{}.py \n".format(complete_path,atom + str(size))]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
