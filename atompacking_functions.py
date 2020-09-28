@@ -642,7 +642,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	"import sys\n",
 	"sys.path.append('{}')\n".format(THIS_FOLDER),	
 	'import atompacking_functions as af \n',
-	'print("running python for run dirs ")'
+	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path)
 	]
 	with open(file_name_out, "w") as fh: 
