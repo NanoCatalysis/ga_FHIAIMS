@@ -713,7 +713,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 		 answer = directory_path
 	if not os.path.exists(directory_path):
 		os.mkdir(directory_path)
-		print("creating folder '{}' ".format(directory_path))
+		#print("creating folder '{}' ".format(directory_path))
 		answer =  directory_path	
 	else:
 		print("folder {} already exists".format(directory_path))
