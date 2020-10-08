@@ -260,7 +260,7 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	#"module purge \n",
 	#"module load use.own\n",
 	#"module load fhi-aims/1\n",
-	"mpirun -np" + str(cores)+ "aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
+	"mpirun -np " + str(cores)+ " aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
