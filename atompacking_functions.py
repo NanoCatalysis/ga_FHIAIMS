@@ -716,7 +716,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 		#print("creating folder '{}' ".format(directory_path))
 		answer =  directory_path	
 	else:
-		print("folder {} already exists".format(directory_path))
+		#print("folder {} already exists".format(directory_path))
 		directory_path=create_folder( original_name, original_path, count +1)
 		answer = directory_path		
 	
