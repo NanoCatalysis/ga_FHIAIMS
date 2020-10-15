@@ -595,42 +595,46 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
-			
-#def probability(E_i, E_min, E_max):
-#	p_i = (E_i - E_min )/(E_max - E_min)
-#	return p_i 
-#
-#def f_exp(alpha, p_i):
-#	f_i =math.pow(math.e, -alpha* p_i)	
-#	return f_i
-#
-#def f_tanh( p_i):
-#	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
-#	return f_i
-#
-#def f_lin(p_i):
-#	f_i = 1- 0.7*p_i
-#	return f_i 
-#
-#
-#
-#def kick(athom):
-#	r_min=-1
-#	r_max=1
-#	x_i = athom[0]
-#	y_i = athom[1]
-#	z_i= athom[2]
-#	theta = random.uniform(0, 2 * math.pi)
-#	phi = random.uniform(0, 2 * math.pi)
-#	r = random.uniform(r_min,r_max)
-#	x = (r * math.cos(theta) * math.sin(phi)) +x_i
-#	y = (r * math.sin(theta) * math.sin(phi)) + y_i
-#	z = (r * math.cos(phi)) + z_i
-#	vector = [x,y,z]
-#	return  vector	
+#########################################################Normalization			
+def Normalization(E_i, E_min, E_max):
+	p_i = (E_i - E_min )/(E_max - E_min)
+	return p_i 
+
+####################################################### Fit
+def f_exp(alpha, p_i):
+	f_i =math.pow(math.e, -alpha* p_i)	
+	return f_i
+
+def f_tanh( p_i):
+	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
+	return f_i
+
+def f_lin(p_i):
+	f_i = 1- 0.7*p_i
+	return f_i 
+
+
+
+
+##########################################################
+def kick(athom):
+	r_min=-1
+	r_max=1
+	x_i = athom[0]
+	y_i = athom[1]
+	z_i= athom[2]
+	theta = random.uniform(0, 2 * math.pi)
+	phi = random.uniform(0, 2 * math.pi)
+	r = random.uniform(r_min,r_max)
+	x = (r * math.cos(theta) * math.sin(phi)) +x_i
+	y = (r * math.sin(theta) * math.sin(phi)) + y_i
+	z = (r * math.cos(phi)) + z_i
+	vector = [x,y,z]
+	return  vector	
 # 
 # 
 # 
+
 ########################################################################
 def create_py(size=55, atom="Au", path="", cores =16):
 	today = datetime.datetime.now()
