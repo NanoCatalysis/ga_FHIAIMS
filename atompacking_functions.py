@@ -513,6 +513,7 @@ def Proof_convergence(atom, size,  complete_path):
 	converged = False 
 	energy = 0 
 	#complete_path = path + directory_name
+	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
 	try :		
 		with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
@@ -771,6 +772,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	Converged = []
 
 	for x in directories:
+		print("currently in ", x)
 		converged = False
 		energy =0
 		converged , energy = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
