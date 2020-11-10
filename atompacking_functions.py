@@ -529,7 +529,7 @@ def Proof_convergence(atom, size,  complete_path):
 			converged = True
 	except :
 		print("Cluster didn't converged")
-		last_dir = str(path.split("/")[-1])
+		last_dir = str(complete_path.split("/")[-1])
 		command = "rm -r " + complete_path
 		print(command)
 		#run_command = shlex.split(command)
