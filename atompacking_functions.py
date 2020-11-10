@@ -528,14 +528,14 @@ def Proof_convergence(atom, size,  complete_path):
 			energy = float(vec1[1].split("eV")[0])
 			print("Energy =" , energy)
 			converged = True
-	except :
-		print("Cluster didn't converged")
-		last_dir = str(complete_path.split("/")[-1])
-		command = "rm -r " + complete_path
-		print(command)
-		#run_command = shlex.split(command)
-		#subprocess.call(command, universal_newlines = True, shell = True)
-	return converged, energy	
+	#except :
+	#	print("Cluster didn't converged")
+	#	last_dir = str(complete_path.split("/")[-1])
+	#	command = "rm -r " + complete_path
+	#	print(command)
+	#	#run_command = shlex.split(command)
+	#	#subprocess.call(command, universal_newlines = True, shell = True)
+			return converged, energy	
 
  	
 def print_wami():
