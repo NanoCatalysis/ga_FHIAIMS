@@ -506,18 +506,17 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
         
 
 	return directory_name
-
 	
 
 
-def Proof_convergence(directory_name, path):
+def Proof_convergence(atom, size,  complete_path):
 	converged = False 
 	energy = 0 
-	complete_path = path + directory_name
+	#complete_path = path + directory_name
 	try :		
-		with cd(directory_name):
+		with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/Au6.out'.format("./"+directory_name)	
+			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path, atom, str(size))	
 			#print(grep_cmd)
 			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
@@ -531,7 +530,7 @@ def Proof_convergence(directory_name, path):
 	except :
 		print("Cluster didn't converged")
 		last_dir = str(path.split("/")[-1])
-		command = "rm -r " + directory_name
+		command = "rm -r " + complete_path
 		print(command)
 		#run_command = shlex.split(command)
 		#subprocess.call(command, universal_newlines = True, shell = True)
@@ -743,7 +742,55 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	create_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node)	
 	print(file_bsub)
-		
+	#read_files(file_dirs)
+	return file_dirs
+
+def read_files(file_dirs):
+	with open(file_dirs, "r") as fh:
+		directories = fh.readlines()
+		fh.close()
+	for x in directories:
+		print(x)
+	return directories
+
+
+def file_exists(size = 52, atom = "Au", path = "", file_term = ".out"):
+	exists = False 
+	if file_term ==".out":
+		name = path+ "/"+ atom + 	str(size) +".out"
+		exists = os.path.isfile(name)
+	else :
+		exists = False
+
+	return exists
+
+
+def check_convergence_pool(file_dirs, Atom = "Au", Size = 52, path ):
+	directories = read_files(file_dirs)
+	Energies =[]
+	Converged = []
+
+	for x in directories:
+		converged = False
+		energy =0
+		converged , energy = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		Converged.append(converged)
+		Energies.append(energy)
+
+	file_energies = path + "/energies.txt"
+	with open(file_energies, "w") as fh:
+	#print(text)
+		for x in Energies:
+			fh.write(x + "\n")
+		#fh.writelines(dirs)
+		fh.close()	
+
+
+	
+
+
+
+
 def run_dirs(path =""):
 	with  open(path + '/file_dirs.txt', 'r') as file1:
 		directories = file1.readlines()
