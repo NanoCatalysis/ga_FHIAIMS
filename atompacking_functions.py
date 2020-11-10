@@ -514,20 +514,21 @@ def Proof_convergence(atom, size,  complete_path):
 	energy = 0 
 	#complete_path = path + directory_name
 	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
-	try :		
-		with cd(complete_path):
+	#try :		
+		#with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path, atom, str(size))	
-			print(grep_cmd)
-			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-			output = process.stdout
-			print(output)
-			ster = process.stderr
-			print(ster)
-			vec1= output.split("	  :	  ")
-			energy = float(vec1[1].split("eV")[0])
-			print("Energy =" , energy)
-			converged = True
+	grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path, atom, str(size))	
+	print(grep_cmd)
+	process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+	output = process.stdout
+	print(output)
+	ster = process.stderr
+	print(ster)
+	vec1= output.split("	  :	  ")
+	energy = float(vec1[1].split("eV")[0])
+	print("Energy =" , energy)
+	converged = True
+	return converged, energy
 	#except :
 	#	print("Cluster didn't converged")
 	#	last_dir = str(complete_path.split("/")[-1])
@@ -535,9 +536,12 @@ def Proof_convergence(atom, size,  complete_path):
 	#	print(command)
 	#	#run_command = shlex.split(command)
 	#	#subprocess.call(command, universal_newlines = True, shell = True)
-			return converged, energy	
+	#return converged, energy
+	# 
+	# 
 
- 	
+
+
 def print_wami():
 	process= subprocess.run(["pwd"], check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
