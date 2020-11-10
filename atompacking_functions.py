@@ -781,7 +781,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	with open(file_energies, "w") as fh:
 	#print(text)
 		for x in Energies:
-			fh.write(x + "\n")
+			fh.write(str(x) + "\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
