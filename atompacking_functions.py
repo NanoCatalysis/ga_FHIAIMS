@@ -512,7 +512,7 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 def Proof_convergence(atom, size,  complete_path):
 	converged = False 
 	energy = 0 
-	#complete_path = path + directory_name
+	complete_path.replace("\n", "")
 	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
 	#try :		
 		#with cd(complete_path):
