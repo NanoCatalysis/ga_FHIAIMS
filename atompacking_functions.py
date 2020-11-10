@@ -517,7 +517,7 @@ def Proof_convergence(atom, size,  complete_path):
 		with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
 			grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path, atom, str(size))	
-			#print(grep_cmd)
+			print(grep_cmd)
 			process =subprocess.run(grep_cmd, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 			output = process.stdout
 			print(output)
