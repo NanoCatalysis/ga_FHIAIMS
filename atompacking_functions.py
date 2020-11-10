@@ -765,7 +765,7 @@ def file_exists(size = 52, atom = "Au", path = "", file_term = ".out"):
 	return exists
 
 
-def check_convergence_pool(file_dirs, Atom = "Au", Size = 52):
+def check_convergence_pool(file_dirs, Atom = "Au", Size = 52, path ):
 	directories = read_files(file_dirs)
 	Energies =[]
 	Converged = []
@@ -773,10 +773,19 @@ def check_convergence_pool(file_dirs, Atom = "Au", Size = 52):
 	for x in directories:
 		converged = False
 		energy =0
-		converged , energy =Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		converged , energy = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
 		Converged.append(converged)
 		Energies.append(energy)
-			
+
+	file_energies = path + "/energies.txt"
+	with open(file_energies, "w") as fh:
+	#print(text)
+		for x in Energies:
+			fh.write(x + "\n")
+		#fh.writelines(dirs)
+		fh.close()	
+
+
 	
 
 
