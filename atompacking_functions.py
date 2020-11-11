@@ -526,7 +526,7 @@ def Proof_convergence(atom, size,  complete_path):
 	#print(ster)
 	output =subprocess.check_output(grep_cmd,shell=True)
 	output_string=str(output)
-	vec1= output_string.split("	  :	  ")
+	vec1=output_string.split("   :   ")
 	energy = float(vec1[1].split("eV")[0])
 	print("Energy =" , energy)
 	converged = True
