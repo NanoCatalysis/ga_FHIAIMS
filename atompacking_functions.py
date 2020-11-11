@@ -137,7 +137,7 @@ def print_xyz_test(size , matrix, atom ):
 
 def print_geometryin(matrix,atom ="Au",path=""):
 	file_name = path + "/geometry.in"
-	print("Creating :" + file_name)
+	#print("Creating :" + file_name)
 	lines_of_text=[]
 	for x in matrix:
 		temp_string = "atom"+"  "+str(x[0]) +"   "+str(x[1])+"   "+str(x[2])+"   " +atom + "\n"
@@ -417,7 +417,7 @@ def create_control_in(path =""):
 	'#    hydro 5 g 15.2']
 
 	file_controlin = path + "/control.in"
-	print("Creating :" + file_controlin)
+	#print("Creating :" + file_controlin)
 	with open(file_controlin, "w") as fh:
 	#print(text)
 		fh.writelines(text)
@@ -593,18 +593,18 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	
 	print("\n directories : ")
 
-	for x in directories:
-	    print(x , "\n ")
+	#for x in directories:
+	#    print(x , "\n ")
 
 	#time.sleep(20)	
 	used_directories =[]
 	for x in directories:
 		path_dum = os.path.join(THIS_FOLDER, x)
 		dir_list = os.listdir(path_dum)  
-		print("Files and directories in '", path_dum, "' :", dir_list)
+		#print("Files and directories in '", path_dum, "' :", dir_list)
 		file_running = path_dum +'/shforrunning.sh'
 		if os.path.exists(file_running) == True: 
-			print("sh created")
+			#print("sh created")
 			used_directories.append(path_dum)
 	return used_directories		
 
@@ -684,7 +684,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'#af.check_convergence_pool( file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}")'.format(THIS_FOLDER, path,atom,size,path )
+	'af.check_convergence_pool( file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}") \n'.format(THIS_FOLDER, path,atom,size,path )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -697,7 +697,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	file_name_sh =  path+"/" + "qsub_fhi.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	complete_path =  os.path.join(THIS_FOLDER,path)
-	print("Creating :" + file_name_sh)
+	#print("Creating :" + file_name_sh)
 
 	text = ["#!/bin/bash \n",
 	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
