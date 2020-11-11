@@ -514,33 +514,33 @@ def Proof_convergence(atom, size,  complete_path):
 	energy = 0 
 	complete_path.replace("\n", "")
 	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
-	#try :		
+	try :		
 		#with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-	grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path.replace("\n", ""), atom, str(size))	
-	print("Command = " , grep_cmd)
-	#process =subprocess.run(grep_cmd,shell=True, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-	#output = process.stdout
-	#print(output)
-	#ster = process.stderr
-	#print(ster)
-	output =subprocess.check_output(grep_cmd,shell=True)
-	output_string=str(output)
-	vec1=output_string.split("   :   ")
-	energy = float(vec1[1].split("eV")[0])
-	print("Energy =" , energy)
-	converged = True
+		grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path.replace("\n", ""), atom, str(size))	
+		#print("Command = " , grep_cmd)
+		#process =subprocess.run(grep_cmd,shell=True, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+		#output = process.stdout
+		#print(output)
+		#ster = process.stderr
+		#print(ster)
+		output =subprocess.check_output(grep_cmd,shell=True)
+		output_string=str(output)
+		vec1=output_string.split("   :   ")
+		energy = float(vec1[1].split("eV")[0])
+		print("Energy =" , energy)
+		converged = True
+	
+	except :
+		print("Cluster didn't converged")
+		#last_dir = str(complete_path.split("/")[-1])
+		command = "rm -r " + complete_path
+		print(command)
+		#run_command = shlex.split(command)
+		#subprocess.call(command, universal_newlines = True, shell = True)
 	return converged, energy
-	#except :
-	#	print("Cluster didn't converged")
-	#	last_dir = str(complete_path.split("/")[-1])
-	#	command = "rm -r " + complete_path
-	#	print(command)
-	#	#run_command = shlex.split(command)
-	#	#subprocess.call(command, universal_newlines = True, shell = True)
-	#return converged, energy
-	# 
-	# 
+	 
+	 
 
 ##### Energia Raw
 #grep_cmd ='''grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  /tmpu/lopb_g/raet_a/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10/Au10.out'''
@@ -627,6 +627,10 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #
 	#with open(path + "Energy.txt", "w") as fh:
 	#	fh.writelines(text)
+
+#####
+#def Normalize_energies_txt(file_energies= ""):
+
 #########################################################Normalization			
 def Normalization(E_i, E_min, E_max):
 	p_i = (E_i - E_min )/(E_max - E_min)
@@ -802,6 +806,8 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	directories = read_files(file_dirs)
 	Energies =[]
 	Converged = []
+	Normalized_energies =[]
+	Prob_tanh=[]
 
 	for x in directories:
 		print("currently in ", x)
@@ -811,11 +817,23 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		Converged.append(converged)
 		Energies.append(energy)
 
+	E_max = max(Energies)
+	E_min = min(Energies)
+
+	for E_i in Energies:
+		e_i= Normalization(E_i, E_min, E_max)
+		Normalized_energies.append(e_i)
+		p_tanh_i= f_tanh(e_i)
+		Prob_tanh.append(p_tanh_i)
+
+
+	
 	file_energies = path + "/energies.txt"
 	with open(file_energies, "w") as fh:
+		fh.write("Energies\t Normalized_energies \t Prob_tanh \n")	
 	#print(text)
-		for x in Energies:
-			fh.write(str(x) + "\n")
+		for i in range(len(Energies)):
+			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
