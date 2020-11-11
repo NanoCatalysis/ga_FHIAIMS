@@ -513,7 +513,7 @@ def Proof_convergence(atom, size,  complete_path):
 	converged = False 
 	energy = 0 
 	complete_path.replace("\n", "")
-	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
+	#print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
 	try :		
 		#with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
@@ -528,7 +528,7 @@ def Proof_convergence(atom, size,  complete_path):
 		output_string=str(output)
 		vec1=output_string.split("   :   ")
 		energy = float(vec1[1].split("eV")[0])
-		print("Energy =" , energy)
+		#print("Energy =" , energy)
 		converged = True
 	
 	except :
@@ -834,7 +834,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		fh.write("Energies\t Normalized_energies \t Prob_tanh \t dir \n")	
 	#print(text)
 		for i in range(len(Energies)):
-			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "t"+ directories[i]+"\n")
+			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "\t"+ directories[i]+"\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
