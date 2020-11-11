@@ -634,20 +634,20 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 #########################################################Normalization			
 def Normalization(E_i, E_min, E_max):
 	p_i = (E_i - E_min )/(E_max - E_min)
-	return p_i 
+	return round(p_i,5) 
 
 ####################################################### Fit
 def f_exp(alpha, p_i):
 	f_i =math.pow(math.e, -alpha* p_i)	
-	return f_i
+	return round(f_i,5)
 
 def f_tanh( p_i):
 	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
-	return f_i
+	return round(f_i, 5)
 
 def f_lin(p_i):
 	f_i = 1- 0.7*p_i
-	return f_i 
+	return round(f_i,5) 
 
 
 
@@ -813,7 +813,8 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		print("currently in ", x)
 		converged = False
 		energy =0
-		converged , energy = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		converged , energy_not_rounded= Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		energy = round(energy_not_rounded, 5)
 		Converged.append(converged)
 		Energies.append(energy)
 
