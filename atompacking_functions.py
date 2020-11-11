@@ -652,7 +652,7 @@ def f_lin(p_i):
 
 
 
-##########################################################
+########################################################## Mutate
 def kick(athom):
 	r_min=-1
 	r_max=1
@@ -778,7 +778,8 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	
 	create_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node)	
-	print(file_bsub)
+	print("For running write: bsub< ", file_bsub)
+
 	#read_files(file_dirs)
 	return file_dirs
 
@@ -786,8 +787,8 @@ def read_files(file_dirs):
 	with open(file_dirs, "r") as fh:
 		directories = fh.readlines()
 		fh.close()
-	for x in directories:
-		print(x)
+	#for x in directories:
+	#	print(x)
 	return directories
 
 
@@ -810,7 +811,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	Prob_tanh=[]
 
 	for x in directories:
-		print("currently in ", x)
+		#print("currently in ", x)
 		converged = False
 		energy =0
 		converged , energy_not_rounded = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
