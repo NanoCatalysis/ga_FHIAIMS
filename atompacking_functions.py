@@ -535,7 +535,7 @@ def Proof_convergence(atom, size,  complete_path):
 		print("Cluster didn't converged")
 		#last_dir = str(complete_path.split("/")[-1])
 		command = "rm -r " + complete_path
-		print(command)
+		print("Run: " , command)
 		#run_command = shlex.split(command)
 		#subprocess.call(command, universal_newlines = True, shell = True)
 	return converged, energy
@@ -813,7 +813,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		print("currently in ", x)
 		converged = False
 		energy =0
-		converged , energy_not_rounded= Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		converged , energy_not_rounded = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
 		energy = round(energy_not_rounded, 5)
 		Converged.append(converged)
 		Energies.append(energy)
@@ -831,10 +831,10 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	
 	file_energies = path + "/energies.txt"
 	with open(file_energies, "w") as fh:
-		fh.write("Energies\t Normalized_energies \t Prob_tanh \n")	
+		fh.write("Energies\t Normalized_energies \t Prob_tanh \t dir \n")	
 	#print(text)
 		for i in range(len(Energies)):
-			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "\n")
+			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "t"+ directories[i]+"\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
