@@ -514,33 +514,33 @@ def Proof_convergence(atom, size,  complete_path):
 	energy = 0 
 	complete_path.replace("\n", "")
 	print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
-	#try :		
+	try :		
 		#with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
-	grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path.replace("\n", ""), atom, str(size))	
-	print("Command = " , grep_cmd)
-	#process =subprocess.run(grep_cmd,shell=True, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-	#output = process.stdout
-	#print(output)
-	#ster = process.stderr
-	#print(ster)
-	output =subprocess.check_output(grep_cmd,shell=True)
-	output_string=str(output)
-	vec1=output_string.split("   :   ")
-	energy = float(vec1[1].split("eV")[0])
-	print("Energy =" , energy)
-	converged = True
+		grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path.replace("\n", ""), atom, str(size))	
+		#print("Command = " , grep_cmd)
+		#process =subprocess.run(grep_cmd,shell=True, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+		#output = process.stdout
+		#print(output)
+		#ster = process.stderr
+		#print(ster)
+		output =subprocess.check_output(grep_cmd,shell=True)
+		output_string=str(output)
+		vec1=output_string.split("   :   ")
+		energy = float(vec1[1].split("eV")[0])
+		print("Energy =" , energy)
+		converged = True
+	
+	except :
+		print("Cluster didn't converged")
+		#last_dir = str(complete_path.split("/")[-1])
+		command = "rm -r " + complete_path
+		print(command)
+		#run_command = shlex.split(command)
+		#subprocess.call(command, universal_newlines = True, shell = True)
 	return converged, energy
-	#except :
-	#	print("Cluster didn't converged")
-	#	last_dir = str(complete_path.split("/")[-1])
-	#	command = "rm -r " + complete_path
-	#	print(command)
-	#	#run_command = shlex.split(command)
-	#	#subprocess.call(command, universal_newlines = True, shell = True)
-	#return converged, energy
-	# 
-	# 
+	 
+	 
 
 ##### Energia Raw
 #grep_cmd ='''grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  /tmpu/lopb_g/raet_a/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10/Au10.out'''
