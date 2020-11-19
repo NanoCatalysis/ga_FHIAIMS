@@ -874,7 +874,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 	#print(text)
 		for i in range(len(Energies)):
-			fh.write(str(Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+probabilities[i]+",\t" + directories[i]+"\n")
+			fh.write(str(Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
