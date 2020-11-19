@@ -629,14 +629,30 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 	#	fh.writelines(text)
 
 #####
-#def Normalize_energies_txt(file_energies= ""):
+
+#
+#
+#
+#
+#Normalized_energies=Normalize_energies(Energies)
+#fitnessed_energies= calculate_fitnesscalculate_fitness(Normalized_energies,func = "tanh")
+#probabilities = probability_i(fitnessed_energies)
 
 #########################################################Normalization			
 def Normalization(E_i, E_min, E_max):
 	p_i = (E_i - E_min )/(E_max - E_min)
 	return round(p_i,5) 
 
-####################################################### Fit
+def Normalize_energies(Energies):
+	E_max = max(Energies)
+	E_min = min(Energies)
+	Normalized_energies = [round((E_i - E_min )/(E_max - E_min),5) for E_i in Energies]
+	return Normalized_energies
+
+
+
+
+####################################################### Fitness
 def f_exp(alpha, p_i):
 	f_i =math.pow(math.e, -alpha* p_i)	
 	return round(f_i,5)
@@ -645,15 +661,38 @@ def f_tanh( p_i):
 	f_i = (1/2)*(1-math.tanh(2*p_i -1))	
 	return round(f_i, 5)
 
-def f_lin(p_i):
-	f_i = 1- 0.7*p_i
+def f_lin(p_i,b =0.7 ):
+	f_i = 1- b*p_i
 	return round(f_i,5) 
+
+def calculate_fitness(Normalized_energies,func = "tanh", alpha = 1):
+	fitnessed =[]
+	if func == "tanh":
+		fitnessed = [ f_tanh(e_i) for e_i in Normalized_energies ] 
+	elif func == "exp":
+		fitnessed = [ f_exp(alpha,e_i) for e_i in Normalized_energies ] 
+	elif func == "lin":
+		fitnessed = [ f_lin(e_i, alpha) for e_i in Normalized_energies ] 
+	else:
+		print("Undefined fitness function using tanh")
+		fitnessed = [ f_tanh(e_i) for e_i in Normalized_energies ]
+	return fitnessed	
+
+##################################################### Probability 
+#### p_i = f_i /sum(f_i)
+###1 == sum(p_i)
+##### random
+def probability_i(fitnessed):
+	sum_fit = sum(fitnessed)
+	p =[(p_i/sum_fit) for p_i in fitnessed]
+	return p
+
 
 
 
 
 ########################################################## Mutate
-def kick(athom):
+def kick(athom,r_min, r_max):
 	r_min=-1
 	r_max=1
 	x_i = athom[0]
@@ -820,23 +859,18 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		Converged.append(converged)
 		Energies.append(energy)
 
-	E_max = max(Energies)
-	E_min = min(Energies)
-
-	for E_i in Energies:
-		e_i= Normalization(E_i, E_min, E_max)
-		Normalized_energies.append(e_i)
-		p_tanh_i= f_tanh(e_i)
-		Prob_tanh.append(p_tanh_i)
+	Normalized_energies=Normalize_energies(Energies)
+	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
+	probabilities = probability_i(fitnessed_energies)
 
 
 	
 	file_energies = path + "/energies.txt"
 	with open(file_energies, "w") as fh:
-		fh.write("Energies\t Normalized_energies \t Prob_tanh \t dir \n")	
+		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 	#print(text)
 		for i in range(len(Energies)):
-			fh.write(str(Energies[i])+"\t"+ str(Normalized_energies[i]) + "\t"+ str(Prob_tanh[i]) + "\t"+ directories[i]+"\n")
+			fh.write(str(Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+probabilities[i]+",\t" + directories[i]+"\n")
 		#fh.writelines(dirs)
 		fh.close()	
 
