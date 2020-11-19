@@ -863,6 +863,10 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
 
+	print("Normalized ", Normalized_energies)
+	print("fitness," , fitnessed_energies)
+	print("probabilities", probabilities)
+
 
 	
 	file_energies = path + "/energies.txt"
