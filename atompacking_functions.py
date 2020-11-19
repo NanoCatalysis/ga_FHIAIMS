@@ -862,7 +862,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
-
+	print("energies", Energies)
 	print("Normalized ", Normalized_energies)
 	print("fitness," , fitnessed_energies)
 	print("probabilities", probabilities)
