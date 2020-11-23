@@ -850,7 +850,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	Energies =[]
 	Converged = []
 	Normalized_energies =[]
-	Prob_tanh=[]
+	
 
 	for x in directories:
 		#print("currently in ", x)
@@ -878,14 +878,17 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	with open(file_energies, "w") as fh:
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 	#print(text)
-		for i in range(len(Energies)):
-			if selected_energy == Energies[i]:
-				fh.write("-> ",str(Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
-			else:
-				fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")	
+		for i in range(len(Energies)):			
+			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")	
+			x = Energies[i]
+			y = selected_energy
+			if x ==y :
+				print("this energy is selected ", y," index: " ,i)
+
 		#fh.writelines(dirs)
 		fh.close()	
-
+		index_selected = Energies.index(selected_energy)
+		print("Index of Energy:", index_selected , "directory :", directories[index_selected])
 
 	
 
