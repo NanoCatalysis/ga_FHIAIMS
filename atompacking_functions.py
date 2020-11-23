@@ -880,15 +880,18 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	#print(text)
 		for i in range(len(Energies)):			
 			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")	
-			x = Energies[i]
-			y = selected_energy[0]
-			if x ==y :
-				print("this energy is selected ", y," index: " ,i)
+			
 
 		#fh.writelines(dirs)
-		fh.close()	
-		index_selected = Energies.index(selected_energy[0])
-		print("Index of Energy:", index_selected , "directory :", directories[index_selected])
+		fh.close()
+
+	index_selected = Energies.index(selected_energy[0])
+	text_selecting ="Selected Energy"+ str(selected_energy[0]) + "Index of Energy:" + index_selected + "directory : " + directories[index_selected]
+	print(text_selecting)
+	with open(file_energies, "a") as fa:
+		fa.write(text_selecting)
+		fa.close()
+
 
 	
 
