@@ -886,7 +886,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		fh.close()
 
 	index_selected = Energies.index(selected_energy[0])
-	text_selecting ="Selected Energy"+ str(selected_energy[0]) + "Index of Energy:" + index_selected + "directory : " + directories[index_selected]
+	text_selecting ="Selected Energy"+ str(selected_energy[0]) + "Index of Energy:" + str(index_selected) + "directory : " + str(directories[index_selected])
 	print(text_selecting)
 	with open(file_energies, "a") as fa:
 		fa.write(text_selecting)
