@@ -123,6 +123,25 @@ def print_xyz(size , matrix, atom , path=""):
 		fh.writelines(lines_of_text)
 		fh.close()
 	return("Done")	 
+
+def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
+    at = np.array(matrix)
+    shape = np.shape(at)
+    dim = shape[1]
+    number =shape[0]
+    file_name = path +  "/" + name + str(number)
+    print(path)
+    print(file_name)
+    lines_of_text =[]
+    for x in matrix:
+        temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ str(x[3])+ "\n"
+        lines_of_text.append(temp_string)
+    with  open("%s.xyz"%file_name, "w") as fh :
+        fh.write(str(number)+ "\n")
+        fh.write("\n")
+        fh.writelines(lines_of_text)
+        fh.close()
+
 def print_xyz_test(size , matrix, atom ):
 	
 	# print("shape: "+ str(shape[0]))
@@ -694,23 +713,56 @@ def selection_energy(Energies, fitnessed_energies):
 
 
 ########################################################## Mutate
-def kick(athom,r_min, r_max):
-	r_min=-1
-	r_max=1
-	x_i = athom[0]
-	y_i = athom[1]
-	z_i= athom[2]
-	theta = random.uniform(0, 2 * math.pi)
-	phi = random.uniform(0, 2 * math.pi)
-	r = random.uniform(r_min,r_max)
-	x = (r * math.cos(theta) * math.sin(phi)) +x_i
-	y = (r * math.sin(theta) * math.sin(phi)) + y_i
-	z = (r * math.cos(phi)) + z_i
-	vector = [x,y,z]
-	return  vector	
+
+def kick_atom(atom,r_min=-1, r_max=1):
+    
+    x_i = atom[0]
+    y_i = atom[1]
+    z_i= atom[2]
+    theta = random.uniform(0, 2 * math.pi)
+    phi = random.uniform(0, 2 * math.pi)
+    r = random.uniform(r_min,r_max)
+    x =round((r * math.cos(theta) * math.sin(phi)) +x_i,5)
+    y =round((r * math.sin(theta) * math.sin(phi)) + y_i,5)
+    z =round((r * math.cos(phi)) + z_i,5)
+    vector = [x,y,z]
+    return  vector
+
+
+
+def read_geometry_nextstep(filename=""):
+    matriz=[]
+    lineas =[]
+    with open(filename, "r") as fh:
+        lineas = fh.readlines()
+        fh.close()
+    lineas_utiles= lineas[5:]
+    for i in range(len(lineas_utiles)):
+        atomo=lineas_utiles[i].replace("atom", "").replace("\n","").split(" ")
+        str_list = list(filter(None, atomo))
+        matriz.append(str_list)
+    return matriz
+
+
+
 # 
 # 
 # 
+def kick(filename = ""):
+	lineas= read_geometry_nextstep(filename=filename)
+	coord_txt = [linea[:-1] for linea in  lineas]
+	atom_list = [linea[-1] for linea in  lineas]
+	coordenadas= [[float(texto) for texto in linea] for linea in coord_txt]
+	nuevas_coordenadas =[kick_atom(coordenada) for coordenada in coordenadas]
+	[nuevas_coordenadas[i].append(atom_list[i]) for i in range(len(atom_list))]
+	
+	return nuevas_coordenadas
+
+def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):	
+	matrix_used= kick(filename = original_file)
+	print_xyz_matrix(matrix= matrix_used, name=filename_mutated, path=path)
+	
+
 
 ########################################################################
 def create_py(size=55, atom="Au", path="", cores =16):
