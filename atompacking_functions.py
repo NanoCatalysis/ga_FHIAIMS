@@ -125,22 +125,25 @@ def print_xyz(size , matrix, atom , path=""):
 	return("Done")	 
 
 def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
-    at = np.array(matrix)
-    shape = np.shape(at)
-    dim = shape[1]
-    number =shape[0]
-    file_name = path +  "/" + name + str(number)
-    print(path)
-    print(file_name)
-    lines_of_text =[]
-    for x in matrix:
-        temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ str(x[3])+ "\n"
-        lines_of_text.append(temp_string)
-    with  open("%s.xyz"%file_name, "w") as fh :
-        fh.write(str(number)+ "\n")
-        fh.write("\n")
-        fh.writelines(lines_of_text)
-        fh.close()
+
+	#name_folder=path.split('/')
+	#original_path= str([string += x for x in name_folder[:-1]])
+	at = np.array(matrix)
+	shape = np.shape(at)
+	number =shape[0]
+	create_folder(name="", path=path)
+	file_name = path +  "/" + name + str(number)
+	print(path)
+	print(file_name)
+	lines_of_text =[]
+	for x in matrix:
+		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ str(x[3])+ "\n"
+		lines_of_text.append(temp_string)
+	with  open("%s.xyz"%file_name, "w") as fh :
+		fh.write(str(number)+ "\n")
+		fh.write("\n")
+		fh.writelines(lines_of_text)
+		fh.close()
 
 def print_xyz_test(size , matrix, atom ):
 	
@@ -762,7 +765,7 @@ def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):
 	matrix_used= kick(filename = original_file)
 	print_xyz_matrix(matrix= matrix_used, name=filename_mutated, path=path)
 	
-
+#kick_mutation(filename_mutated = "geometry.in", path="~/work_dir/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10_mutated/", original_file="~/work_dir/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10/geometry.in.next_step")
 
 ########################################################################
 def create_py(size=55, atom="Au", path="", cores =16):
@@ -855,6 +858,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 		answer = directory_path		
 	
 	return answer	 			
+
 
 
 def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
