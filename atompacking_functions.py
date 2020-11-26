@@ -132,14 +132,14 @@ def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
 	shape = np.shape(at)
 	number =shape[0]
 	create_folder(name="", path=path)
-	file_name = path +  "/" + name + str(number)
+	file_name = path +  "/" + name 
 	print(path)
 	print(file_name)
 	lines_of_text =[]
 	for x in matrix:
 		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ str(x[3])+ "\n"
 		lines_of_text.append(temp_string)
-	with  open("%s.xyz"%file_name, "w") as fh :
+	with  open(file_name, "w") as fh :
 		fh.write(str(number)+ "\n")
 		fh.write("\n")
 		fh.writelines(lines_of_text)
