@@ -948,6 +948,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		fa.write(text_selecting)
 		fa.close()
 
+	kick_mutation(filename_mutated = "geometry.in", path= path+"/Au10_mutated/", original_file=str(directories[index_selected])+"/geometry.in.next_step")
 
 	
 
