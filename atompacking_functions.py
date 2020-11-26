@@ -146,10 +146,6 @@ def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
 		fh.close()
 
 def print_xyz_test(size , matrix, atom ):
-	
-	# print("shape: "+ str(shape[0]))
-	
-	lines_of_text =[]
 	for x in matrix:
 		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n"
 		print(temp_string)
@@ -181,7 +177,8 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 
 	print_geometryin(cluster,Atom ,Path_cluster)
 	print_xyz(size,cluster, Atom, Path_cluster)
-	create_shforrunning(size,Atom,Path_cluster,cores =cores)
+	#create_shforrunning(size,Atom,Path_cluster,cores =cores)
+	create_shforrunning_name(name= Atom+str(size),path = path, cores=cores)
 	create_control_in(path =Path_cluster)
 
 	return "Done"
@@ -272,16 +269,6 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	root_dir =  os.path.dirname(os.path.abspath(__file__))
 	complete_dir = os.path.join(root_dir, path)
 	text = ["#!/bin/bash \n", 
-	#"#BSUB -q  q_residual \n",
-	#"#BSUB -oo fhi-aims.%J.o \n",
-	#"#BSUB -eo fhi-aims.%J.e \n",
-	## num cores 
-	#"#BSUB -n  16 \n",
-	##nodos 
-	#'#BSUB -m "g1" \n',
-	#"module purge \n",
-	#"module load use.own\n",
-	#"module load fhi-aims/1\n",
 	"mpirun -np " + str(cores)+ " aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
 	#print(text)
 	with open(file_name_sh, "w") as fh: 
@@ -290,32 +277,47 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
 	return "shforrunning.sh"
 		
-		
+def create_shforrunning_name(name="Name.out", path ="", cores = "16"):
+	file_name_out =  name
+	file_name_sh = path + "/shforrunning.sh"
+	print("Creating :" + file_name_sh)
+	root_dir =  os.path.dirname(os.path.abspath(__file__))
+	complete_dir = os.path.join(root_dir, path)
+	text = ["#!/bin/bash \n", 
+	"mpirun -np " + str(cores)+ " aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
+	#print(text)
+	with open(file_name_sh, "w") as fh: 
+		fh.writelines(text)
+		fh.close()	
+	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
+	return "shforrunning.sh"		
 
 
 
+#Not needed 
+#def create_directory(size =55, atom ="Au", path ="", add =0):
+#	count = add
+#	original_size = size
+#	original_atom = atom 
+#	original_path = path 
+#	directory_name =original_atom + str(original_size)
+#	directory_path = original_path+"/"+ directory_name	
+#	answer = "not changing answer"
+#	if count != 0:
+#		 directory_path = original_path+ "/" + directory_name + "_" + str(count)
+#		 answer = directory_path
+#	if not os.path.exists(directory_path):
+#		os.mkdir(directory_path)
+#		print("creating folder '{}' ".format(directory_path))
+#		answer =  directory_path	
+#	else:
+#		print("folder {} already exists".format(directory_path))
+#		directory_path=create_directory(original_size, original_atom, original_path, count +1)
+#		answer = directory_path		
+#	
+#	return answer	
+#
 
-def create_directory(size =55, atom ="Au", path ="", add =0):
-	count = add
-	original_size = size
-	original_atom = atom 
-	original_path = path 
-	directory_name =original_atom + str(original_size)
-	directory_path = original_path+"/"+ directory_name	
-	answer = "not changing answer"
-	if count != 0:
-		 directory_path = original_path+ "/" + directory_name + "_" + str(count)
-		 answer = directory_path
-	if not os.path.exists(directory_path):
-		os.mkdir(directory_path)
-		print("creating folder '{}' ".format(directory_path))
-		answer =  directory_path	
-	else:
-		print("folder {} already exists".format(directory_path))
-		directory_path=create_directory(original_size, original_atom, original_path, count +1)
-		answer = directory_path		
-	
-	return answer	
 
 def check_and_rename(file, add=0):
     original_file = file
@@ -504,7 +506,8 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 
 	dist_max = Cluster_size(Size, R_ws= 1.44)
-	directory_name =create_directory(size, atom, path)
+	#directory_name =create_directory(size, atom, path)
+	directory_name = create_folder(name=Atom+str(Size), path=path)
 	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max, cores=cores)
 	
 	#host =get_hostname()
@@ -765,7 +768,16 @@ def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):
 	matrix_used= kick(filename = original_file)
 	print_xyz_matrix(matrix= matrix_used, name=filename_mutated, path=path)
 	
-#kick_mutation(filename_mutated = "geometry.in", path="~/work_dir/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10_mutated/", original_file="~/work_dir/FHIaims/light_coarse/code/ga_FHIAIMS/pools_au6/Au10/Au10/geometry.in.next_step")
+def Mutate(mutation ="",filename_mutated = "geometry.in", path="", original_file=""):
+	if mutation =="kick":
+		kick_mutation(filename_mutated = filename_mutated, path=path, original_file=original_file)
+
+def create_files_mutation(size=52, atom="",path ="",cores =16):
+	create_control_in(path =path)	
+	create_shforrunning_name(name=atom+ str(size), path=path ,cores =cores)
+
+
+
 
 ########################################################################
 def create_py(size=55, atom="Au", path="", cores =16):
@@ -902,6 +914,7 @@ def file_exists(size = 52, atom = "Au", path = "", file_term = ".out"):
 
 
 def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
+	name = Atom + Size 
 	directories = read_files(file_dirs)
 	Energies =[]
 	Converged = []
@@ -948,7 +961,9 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 		fa.write(text_selecting)
 		fa.close()
 
-	kick_mutation(filename_mutated = "geometry.in", path= path+"/Au10_mutated/", original_file=str(directories[index_selected])+"/geometry.in.next_step")
+	
+	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected])+"/geometry.in.next_step")
 
 	
 
