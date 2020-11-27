@@ -949,8 +949,13 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
-	run_dirs(path=path_mutated)
+	run_file(path=path_mutated, filename= './shforrunning.sh')
 
+
+
+def run_file(path="", filename= './shforrunning.sh'):
+	with cd(path):
+		subprocess.call(filename,universal_newlines = True, shell = True)
 
 
 
