@@ -133,11 +133,9 @@ def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
 	number =shape[0]
 	create_folder(name="", path=path)
 	file_name = path +  "/" + name 
-	print(path)
-	print(file_name)
 	lines_of_text =[]
 	for x in matrix:
-		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ str(x[3])+ "\n"
+		temp_string = "atom   " + str(x[0]) + "   " + str(x[1]) + "   " + str(x[2]) + "   " + str(x[3])+ "\n"
 		lines_of_text.append(temp_string)
 	with  open(file_name, "w") as fh :
 		fh.write(str(number)+ "\n")
@@ -764,6 +762,7 @@ def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):
 	matrix_used= kick(filename = original_file)
 	print_xyz_matrix(matrix= matrix_used, name=filename_mutated, path=path)
 	
+	
 def Mutate(mutation ="",filename_mutated = "geometry.in", path="", original_file=""):
 	if mutation =="kick":
 		kick_mutation(filename_mutated = filename_mutated, path=path, original_file=original_file)
@@ -788,7 +787,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'af.check_convergence_pool( file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}") \n'.format(THIS_FOLDER, path,atom,size,path )
+	'af.check_convergence_pool( file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -890,7 +889,7 @@ def read_files(file_dirs):
 
 
 
-def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
+def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
 	name = Atom + str(Size) 
 	directories = read_files(file_dirs)
 	Energies =[]
@@ -941,7 +940,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 	
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-
+	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	
 
 
