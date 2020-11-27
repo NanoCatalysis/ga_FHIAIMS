@@ -709,7 +709,7 @@ def calculate_fitness(Normalized_energies,func = "tanh", alpha = 1):
 ##### random
 def probability_i(fitnessed):
 	sum_fit = sum(fitnessed)
-	p =[(p_i/sum_fit) for p_i in fitnessed]
+	p =[round((p_i/sum_fit),5) for p_i in fitnessed]
 	return p
 
 def selection_energy(Energies, fitnessed_energies):
@@ -940,7 +940,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
 
 	
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
-	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected])+"/geometry.in.next_step")
+	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 
 	
 
