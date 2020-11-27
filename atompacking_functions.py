@@ -278,7 +278,7 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	return "shforrunning.sh"
 		
 def create_shforrunning_name(name="Name.out", path ="", cores = "16"):
-	file_name_out =  name
+	file_name_out =  name +".out"
 	file_name_sh = path + "/shforrunning.sh"
 	print("Creating :" + file_name_sh)
 	root_dir =  os.path.dirname(os.path.abspath(__file__))
