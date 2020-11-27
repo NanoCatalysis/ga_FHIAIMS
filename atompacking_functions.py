@@ -124,7 +124,7 @@ def print_xyz(size , matrix, atom , path=""):
 		fh.close()
 	return("Done")	 
 
-def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
+def print_matrix_geometryin(matrix =[[],[]],name = "", path= ""):
 
 	#name_folder=path.split('/')
 	#original_path= str([string += x for x in name_folder[:-1]])
@@ -138,8 +138,8 @@ def print_xyz_matrix(matrix =[[],[]],name = "", path= ""):
 		temp_string = "atom   " + str(x[0]) + "   " + str(x[1]) + "   " + str(x[2]) + "   " + str(x[3])+ "\n"
 		lines_of_text.append(temp_string)
 	with  open(file_name, "w") as fh :
-		fh.write(str(number)+ "\n")
-		fh.write("\n")
+		#fh.write(str(number)+ "\n")
+		#fh.write("\n")
 		fh.writelines(lines_of_text)
 		fh.close()
 
@@ -760,7 +760,7 @@ def kick(filename = ""):
 
 def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):	
 	matrix_used= kick(filename = original_file)
-	print_xyz_matrix(matrix= matrix_used, name=filename_mutated, path=path)
+	print_matrix_geometryin(matrix= matrix_used, name=filename_mutated, path=path)
 	
 	
 def Mutate(mutation ="",filename_mutated = "geometry.in", path="", original_file=""):
