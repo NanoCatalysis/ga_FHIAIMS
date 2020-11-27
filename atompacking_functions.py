@@ -691,17 +691,17 @@ def f_lin(p_i,b =0.7 ):
 	return round(f_i,5) 
 
 def calculate_fitness(Normalized_energies,func = "tanh", alpha = 1):
-	fitnessed =[]
+	fitnessed_energies =[]
 	if func == "tanh":
-		fitnessed = [ f_tanh(e_i) for e_i in Normalized_energies ] 
+		fitnessed_energies = [ f_tanh(e_i) for e_i in Normalized_energies ] 
 	elif func == "exp":
-		fitnessed = [ f_exp(alpha,e_i) for e_i in Normalized_energies ] 
+		fitnessed_energies	 = [ f_exp(alpha,e_i) for e_i in Normalized_energies ] 
 	elif func == "lin":
-		fitnessed = [ f_lin(e_i, alpha) for e_i in Normalized_energies ] 
+		fitnessed_energies = [ f_lin(e_i, alpha) for e_i in Normalized_energies ] 
 	else:
 		print("Undefined fitness function using tanh")
-		fitnessed = [ f_tanh(e_i) for e_i in Normalized_energies ]
-	return fitnessed	
+		fitnessed_energies = [ f_tanh(e_i) for e_i in Normalized_energies ]
+	return fitnessed_energies	
 
 ##################################################### Probability 
 #### p_i = f_i /sum(f_i)
@@ -750,10 +750,6 @@ def read_geometry_nextstep(filename=""):
     return matriz
 
 
-
-# 
-# 
-# 
 def kick(filename = ""):
 	lineas= read_geometry_nextstep(filename=filename)
 	coord_txt = [linea[:-1] for linea in  lineas]
@@ -800,13 +796,11 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
 def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
-	#today = datetime.datetime.now()
-	#file_name_out =  atom + 	str(size) +".out"
+	
 	file_name_sh =  path+"/" + "qsub_fhi.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	complete_path =  os.path.join(THIS_FOLDER,path)
-	#print("Creating :" + file_name_sh)
-
+	
 	text = ["#!/bin/bash \n",
 	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
 	"#BSUB -q  q_residual \n",
@@ -862,10 +856,8 @@ def create_folder( name ="Au_6", path ="", add =0):
 		 answer = directory_path
 	if not os.path.exists(directory_path):
 		os.mkdir(directory_path)
-		#print("creating folder '{}' ".format(directory_path))
 		answer =  directory_path	
 	else:
-		#print("folder {} already exists".format(directory_path))
 		directory_path=create_folder( original_name, original_path, count +1)
 		answer = directory_path		
 	
@@ -880,41 +872,26 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	print("Creating : file of directories" )
 	file_dirs= path_master + "/file_dirs.txt"
 	with open(file_dirs, "w") as fh:
-	#print(text)
 		for x in dirs:
 			fh.write(x + "\n")
-		#fh.writelines(dirs)
 		fh.close()
 	
 	create_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node)	
 	print("For running write: bsub < ", file_bsub)
 
-	#read_files(file_dirs)
 	return file_dirs
 
 def read_files(file_dirs):
 	with open(file_dirs, "r") as fh:
 		directories = fh.readlines()
 		fh.close()
-	#for x in directories:
-	#	print(x)
 	return directories
 
 
-def file_exists(size = 52, atom = "Au", path = "", file_term = ".out"):
-	exists = False 
-	if file_term ==".out":
-		name = path+ "/"+ atom + 	str(size) +".out"
-		exists = os.path.isfile(name)
-	else :
-		exists = False
-
-	return exists
-
 
 def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="" ):
-	name = Atom + Size 
+	name = Atom + str(Size) 
 	directories = read_files(file_dirs)
 	Energies =[]
 	Converged = []
