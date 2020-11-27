@@ -530,9 +530,29 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 
 	return directory_name
 	
+def check_convergence(filename="",path =""):
+	converged = False 
+	energy = 0 
+	path.replace("\n", "")
+	try :		
+		grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}'.format(path.replace("\n", ""), filename)	
+		output =subprocess.check_output(grep_cmd,shell=True)
+		output_string=str(output)
+		vec1=output_string.split("   :   ")
+		energy = float(vec1[1].split("eV")[0])
+		converged = True
+	
+	except :
+		print("Cluster didn't converged")
+		command = "rm -r " + path
+		print("Run: " , command)
+	return converged, energy
+
+
 
 
 def Proof_convergence(atom, size,  complete_path):
+
 	converged = False 
 	energy = 0 
 	complete_path.replace("\n", "")
@@ -913,6 +933,9 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		Converged.append(converged)
 		Energies.append(energy)
 
+	E_max = max(Energies)
+	E_min = min(Energies)
+	
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
@@ -937,14 +960,19 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		#fh.writelines(dirs)
 		fh.close()
 
+
+	#########
+
 	index_selected = Energies.index(selected_energy[0])
+
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
 	print(text_selecting)
 	with open(file_energies, "a") as fa:
 		fa.write(text_selecting)
 		fa.close()
 
-	
+	############################mutation
+
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
 	append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
@@ -952,6 +980,15 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	run_file(path=path_mutated, filename= './shforrunning.sh')
 
 
+	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
+	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+	fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	
+	with open(file_energies, "a") as fh:
+		fh.write("After mutation:\n")
+		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+		fh.close()
 
 def run_file(path="", filename= './shforrunning.sh'):
 	with cd(path):
