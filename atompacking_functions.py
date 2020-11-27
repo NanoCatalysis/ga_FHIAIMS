@@ -881,6 +881,13 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 
 	return file_dirs
 
+def append_file(text_to_append="", file_to_append=""):
+	with open(file_to_append, "a") as fh:
+		fh.write(text_to_append + "\n")
+		fh.close()
+
+
+
 def read_files(file_dirs):
 	with open(file_dirs, "r") as fh:
 		directories = fh.readlines()
@@ -939,9 +946,10 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
-	
+	run_dirs(path=path_mutated)
 
 
 
