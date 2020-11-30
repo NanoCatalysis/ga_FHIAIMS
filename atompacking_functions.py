@@ -683,13 +683,13 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 
 #########################################################Normalization			
 def Normalization(E_i, E_min, E_max):
-	p_i = (E_i - E_min )/(E_max - E_min)
+	p_i = (E_i - E_max)/(E_min - E_max)
 	return round(p_i,5) 
 
 def Normalize_energies(Energies):
-	E_max = min(Energies)
-	E_min = max(Energies)
-	Normalized_energies = [round((E_i - E_min )/(E_max - E_min),5) for E_i in Energies]
+	E_max = max(Energies)
+	E_min = min(Energies)
+	Normalized_energies = [round((E_i - E_max )/(E_min - E_max),5) for E_i in Energies]
 	return Normalized_energies
 
 
@@ -933,8 +933,8 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		Converged.append(converged)
 		Energies.append(energy)
 
-	E_min = max(Energies)
-	E_max = min(Energies)
+	E_max = max(Energies)
+	E_min = min(Energies)
 	
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
