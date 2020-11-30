@@ -683,13 +683,13 @@ def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dis
 
 #########################################################Normalization			
 def Normalization(E_i, E_min, E_max):
-	p_i = (E_i - E_max)/(E_min - E_max)
+	p_i = (E_i - E_min)/(E_max - E_min)
 	return round(p_i,5) 
 
 def Normalize_energies(Energies):
 	E_max = max(Energies)
 	E_min = min(Energies)
-	Normalized_energies = [round((E_i - E_max )/(E_min - E_max),5) for E_i in Energies]
+	Normalized_energies = [round((E_i - E_min)/(E_max - E_min),5) for E_i in Energies]
 	return Normalized_energies
 
 
