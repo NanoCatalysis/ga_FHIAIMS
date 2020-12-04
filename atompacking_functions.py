@@ -783,7 +783,7 @@ def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):
 	print_matrix_geometryin(matrix= matrix_used, name=filename_mutated, path=path)
 	
 	
-def Mutate(mutation ="",filename_mutated = "geometry.in", path="", original_file=""):
+def choose_mutation(mutation ="",filename_mutated = "geometry.in", path="", original_file=""):
 	if mutation =="kick":
 		kick_mutation(filename_mutated = filename_mutated, path=path, original_file=original_file)
 
@@ -939,30 +939,18 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
-	selected_energy = selection_energy(Energies, fitnessed_energies)
+	
 	print("energies", Energies)
 	print("Normalized ", Normalized_energies)
 	print("fitness," , fitnessed_energies)
 	print("probabilities", probabilities)
-	print("Selected Energy: ", selected_energy)
-
-
-
 	
-	file_energies = path + "/energies.txt"
-	with open(file_energies, "w") as fh:
-		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-	#print(text)
-		for i in range(len(Energies)):			
-			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")	
-			
-
-		#fh.writelines(dirs)
-		fh.close()
-
-
-	#########
-
+	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
+	
+	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
+	########################selection for mutation
+	selected_energy = selection_energy(Energies, fitnessed_energies)
+	print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
 
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
@@ -974,7 +962,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	############################mutation
 
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
-	append_file(text_to_append=path_mutated, file_to_append=file_dirs)
+	#append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
@@ -989,6 +977,69 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 		fh.close()
+
+#text option is "a" for append , "w" for write
+def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a"): 
+    file_energies = path + filename
+    with open(file_energies, text_option) as fh:
+        fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+        for i in range(len(Energies)):
+            fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
+        fh.close()
+	return file_energies	
+
+def read_data(filename="",path="./"):
+    with open(path+filename, "r") as f:
+        lines_read=f.readlines()
+        f.close()
+    lines=lines_read[1:]
+    lines
+    Energies_1=[]
+    Normalized_energies_1=[]
+    fitnessed_energies_1=[]
+    probabilities_1=[]
+    directories_1=[]
+    for line in lines:
+        vector_line=line.replace("\t","").replace("\n","").split(",")
+        Energies_1.append(float(vector_line[0]))
+        Normalized_energies_1.append(float(vector_line[1]))
+        fitnessed_energies_1.append(float(vector_line[2]))
+        probabilities_1.append(float(vector_line[3]))
+        directories_1.append(vector_line[4])
+    return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1 
+
+
+
+
+def Mutate(data_last_step= "", path = path, name="" ):
+	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path=path) 
+	selected_energy = selection_energy(Energies, fitnessed_energies)
+	print("Selected Energy: ", selected_energy)
+	index_selected = Energies.index(selected_energy[0])
+	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
+	print(text_selecting)
+	with open(file_energies, "a") as fa:
+		fa.write(text_selecting)
+		fa.close()
+
+	############################mutation
+
+	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
+	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	run_file(path=path_mutated, filename= './shforrunning.sh')
+
+
+	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
+	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+	fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	
+	with open(file_energies, "a") as fh:
+		fh.write("After mutation:\n")
+		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+		fh.close()
+
 
 def run_file(path="", filename= './shforrunning.sh'):
 	with cd(path):
