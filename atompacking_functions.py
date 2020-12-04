@@ -1011,7 +1011,7 @@ def read_data(filename="",path="./"):
 
 
 
-def Mutate(data_last_step= "", path = path, name="" ):
+def Mutate(data_last_step= "", path = "", name="" ):
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path=path) 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
