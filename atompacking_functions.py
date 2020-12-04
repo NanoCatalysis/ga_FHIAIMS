@@ -980,13 +980,13 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 #text option is "a" for append , "w" for write
 def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a"): 
-    file_energies = path + filename
-    with open(file_energies, text_option) as fh:
-        fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-        for i in range(len(Energies)):
-            fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
-        fh.close()
-	return file_energies	
+	file_energies = path + filename
+	with open(file_energies, text_option) as fh:
+		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+		for i in range(len(Energies)):
+			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
+return file_energies
+
 
 def read_data(filename="",path="./"):
     with open(path+filename, "r") as f:
