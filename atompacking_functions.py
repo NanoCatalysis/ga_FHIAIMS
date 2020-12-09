@@ -986,7 +986,7 @@ def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], f
 	file_energies = path + filename
 	with open(file_energies, text_option) as fh:
 		if step is not None:
-			fh.write(str(step), "\n")
+			fh.write(str(step)+ "\n")
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		for i in range(len(Energies)):
 			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
