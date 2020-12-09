@@ -809,7 +809,9 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'af.check_convergence_pool( file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
+	'af.check_convergence_pool_first_step(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores ),
+	'#af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size ),
+	'#af.Cicle_mutation(data_last_step="{}/{}/data_last_step.txt", path = "{}", name="{}", cores ={}, file_energies="{}", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,cores,,atom,size )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -917,6 +919,40 @@ def read_files(file_dirs):
 	return directories
 
 
+def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
+	name = Atom + str(Size) 
+	directories = read_files(file_dirs)
+	Energies =[]
+	Converged = []
+	Normalized_energies =[]
+	
+
+	for x in directories:
+		#print("currently in ", x)
+		converged = False
+		energy =0
+		converged , energy_not_rounded = Proof_convergence(atom = Atom, size = Size,  complete_path = x)
+		energy = round(energy_not_rounded, 5)
+		Converged.append(converged)
+		Energies.append(energy)
+
+	E_max = max(Energies)
+	E_min = min(Energies)
+	
+	Normalized_energies=Normalize_energies(Energies)
+	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
+	probabilities = probability_i(fitnessed_energies)
+	
+	print("energies", Energies)
+	print("Normalized ", Normalized_energies)
+	print("fitness," , fitnessed_energies)
+	print("probabilities", probabilities)
+	
+	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
+	Number_ofsteps=Number_ofGenerations(Size)
+	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
+	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
+	
 
 def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
 	name = Atom + str(Size) 
@@ -948,9 +984,9 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	print("probabilities", probabilities)
 	
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
-	
+	Number_ofsteps=Number_ofGenerations(Size)
 	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
-	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0)
+	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
@@ -982,11 +1018,11 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fh.close()
 
 #text option is "a" for append , "w" for write
-def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None): 
+def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None,Number_ofGenerations=32): 
 	file_energies = path+"/" + filename
 	with open(file_energies, text_option) as fh:
 		if step is not None:
-			fh.write(str(step)+ "\n")
+			fh.write(str(step)+"/"+str(Number_ofGenerations)+ "\n")
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		for i in range(len(Energies)):
 			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
@@ -1013,8 +1049,15 @@ def read_data(filename="",path="./"):
         directories_1.append(vector_line[4])
     return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1 
 
-
-
+def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+	with open(data_last_step, "r") as fa:
+		text=fa.readline(text_selecting)
+		fa.close()
+	text=text.replace("/n","")
+	vector_1 = text.split("/")
+	vector = [str(x) for x in vector_1]
+	for x in range (vector[0], vector[1]):
+		Mutate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
 
 def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path=path) 
