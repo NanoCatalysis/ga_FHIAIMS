@@ -7,6 +7,8 @@ import time
 import os 
 import datetime
 
+###### Geometric functions
+
 def distance_1(atom1,atom2):
     dist = math.sqrt(math.pow(atom1[0] - atom2[0], 2) +
                      math.pow(atom1[1] - atom2[1], 2) +
@@ -60,7 +62,7 @@ def proof_distance(atom1, atom2, r_min=0,r_max=10):
         condition = False
     else:
         condition = True
-    return condition;       
+    return condition       
 
 
 
@@ -948,6 +950,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	
 	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
+	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
@@ -979,9 +982,11 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fh.close()
 
 #text option is "a" for append , "w" for write
-def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a"): 
+def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None): 
 	file_energies = path + filename
 	with open(file_energies, text_option) as fh:
+		if step is not None:
+			fh.write(str(step), "\n")
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		for i in range(len(Energies)):
 			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
@@ -1011,7 +1016,7 @@ def read_data(filename="",path="./"):
 
 
 
-def Mutate(data_last_step= "", path = "", name="" ):
+def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path=path) 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
@@ -1029,6 +1034,8 @@ def Mutate(data_last_step= "", path = "", name="" ):
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
 
+	E_min= min(Energies)
+	E_max = max(Energies)
 
 	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
 	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
