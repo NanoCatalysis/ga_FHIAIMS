@@ -983,7 +983,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 #text option is "a" for append , "w" for write
 def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None): 
-	file_energies = path + filename
+	file_energies = path+"/" + filename
 	with open(file_energies, text_option) as fh:
 		if step is not None:
 			fh.write(str(step)+ "\n")
