@@ -815,7 +815,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
-		
+		fh.close()
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
 def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
@@ -1026,6 +1026,7 @@ def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], f
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		for i in range(len(Energies)):
 			fh.write(str( Energies[i])+",\t"+ str(Normalized_energies[i]) + ",\t"+ str(fitnessed_energies[i]) + ",\t"+ str(probabilities[i])+",\t" + directories[i]+"\n")
+		fh.close()	
 	return file_energies
 
 
