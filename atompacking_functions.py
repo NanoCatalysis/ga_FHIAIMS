@@ -1039,7 +1039,7 @@ def read_data(filename="",path="./"):
         lines_read=f.readlines()
         f.close()
     lines=lines_read[2:]
-    lines
+    print(lines)
     Energies_1=[]
     Normalized_energies_1=[]
     fitnessed_energies_1=[]
@@ -1047,14 +1047,15 @@ def read_data(filename="",path="./"):
     directories_1=[]
     for line in lines:
         vector_line=line.replace("\t","").replace("\n","").split(",")
-		if vector_line != ['']:
-        	Energies_1.append(float(vector_line[0]))
-        	Normalized_energies_1.append(float(vector_line[1]))
-        	fitnessed_energies_1.append(float(vector_line[2]))
-        	probabilities_1.append(float(vector_line[3]))
-        	directories_1.append(vector_line[4])
+        print(vector_line)
+        if vector_line != ['']:
+            Energies_1.append(float(vector_line[0]))
+            Normalized_energies_1.append(float(vector_line[1]))
+            fitnessed_energies_1.append(float(vector_line[2]))
+            probabilities_1.append(float(vector_line[3]))
+            directories_1.append(vector_line[4])
     return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1 
-
+	
 def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	try:	
 		#check_if_files_exists()
