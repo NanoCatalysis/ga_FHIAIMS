@@ -1069,7 +1069,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 		print("Data last step accesible")
 
 def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
-	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path=path) 
+	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
