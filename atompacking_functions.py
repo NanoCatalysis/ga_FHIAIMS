@@ -1111,8 +1111,8 @@ def run_file(path="", filename= './shforrunning.sh'):
 
 def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
 	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
-	Mutate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
-	#Cicle_mutation(data_last_step= data_last_step, path = path, name="", cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
+	Mutate(data_last_step= data_last_step, path = path, name=f"{Atom+Size}", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
+	Cicle_mutation(data_last_step= data_last_step, path = path, name=f"{Atom+Size}", cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
 
 
 
