@@ -1083,7 +1083,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 
 	############################mutation
 
-	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	path_mutated = create_folder(name="{}_mutated".format(Atom+str(Size) ), path= path)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
