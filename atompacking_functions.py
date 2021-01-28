@@ -785,6 +785,7 @@ def kick(filename = ""):
 	return nuevas_coordenadas
 
 def kick_mutation(filename_mutated = "geometry.in", path="", original_file=""):	
+	print("path:",path,"file",original_file, "filename_mutated", filename_mutated)
 	matrix_used= kick(filename = original_file)
 	print_matrix_geometryin(matrix= matrix_used, name=filename_mutated, path=path)
 	
@@ -1076,7 +1077,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
-	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
+	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected]+"\n")
 	print(text_selecting)
 	with open(file_energies, "a") as fa:
 		fa.write(text_selecting)
