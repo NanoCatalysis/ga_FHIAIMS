@@ -814,8 +814,8 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
 	'af.complete_cicle_mutation(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores ),
-	'#af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size ),
-	'#af.Cicle_mutation(data_last_step="{}/{}/data_last_step.txt", path = "{}", name="", cores ={}, file_energies="{}", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
+	'af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
+	#'af.Cicle_mutation(data_last_step="{}/{}/data_last_step.txt", path = "{}", name="", cores ={}, file_energies="{}", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -1066,6 +1066,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 		vector_1 = text.split("/")
 		vector = [str(x) for x in vector_1]
 		for x in range (vector[0], vector[1]):
+			print("Step:",vector[0]," of", vector[0])
 			Mutate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
 	except IOError:
 		print("Data last step accesible")
@@ -1083,7 +1084,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 
 	############################mutation
 
-	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	path_mutated = create_folder(name="{}_mutated".format(Atom+str(Size) ), path= path)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
@@ -1111,8 +1112,8 @@ def run_file(path="", filename= './shforrunning.sh'):
 
 def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
 	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
-	Mutate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
-	#Cicle_mutation(data_last_step= data_last_step, path = path, name="", cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
+	Mutate(data_last_step= data_last_step, path = path, name=f"{Atom+Size}", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
+	Cicle_mutation(data_last_step= data_last_step, path = path, name=f"{Atom+Size}", cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
 
 
 
