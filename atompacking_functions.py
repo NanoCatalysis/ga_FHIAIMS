@@ -1066,7 +1066,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 		text=text.replace("/n","")
 		vector_1 = text.split("/")
 		vector = [str(x) for x in vector_1]
-		for x in range (vector[0], vector[1]):
+		for x in range (int(vector[0]), int(vector[1])):
 			print("Step:",vector[0]," of", vector[0])
 			Mutate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
 	except IOError:
