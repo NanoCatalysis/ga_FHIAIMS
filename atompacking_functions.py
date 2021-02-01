@@ -145,17 +145,12 @@ def print_matrix_geometryin(matrix =[[],[]],name = "", path= ""):
 		fh.writelines(lines_of_text)
 		fh.close()
 
-def print_xyz_test(size , matrix, atom ):
-	for x in matrix:
-		temp_string = "atom\t" +str(x[0])+"\t"+ str(x[1])+"\t"+str(x[2])+"\t"+ atom+ "\n"
-		print(temp_string)
 
-	return("Done")	 
 
 
 def print_geometryin(matrix,atom ="Au",path=""):
 	file_name = path + "/geometry.in"
-	#print("Creating :" + file_name)
+	
 	lines_of_text=[]
 	for x in matrix:
 		temp_string = "atom"+"  "+str(x[0]) +"   "+str(x[1])+"   "+str(x[2])+"   " +atom + "\n"
@@ -205,7 +200,7 @@ def create_qsub(size =55, atom ="Au", path =""):
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
 	"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
-	#print(text)
+	
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
 		
@@ -252,7 +247,7 @@ def create_runsh(size =55, atom ="Au", path =""):
         print("Creating :" + file_name_sh)
         
         text = ["nohup mpiexec -np 24 -f /home/raet/machinefiles.txt /opt/fhi-aims/bin/aims.171221_1.scalapack.mpi.x < control.in"]
-        #print(text)
+        
         with  open(file_name_sh, "w") as fh :
 
         	fh.writelines(text)
@@ -270,7 +265,7 @@ def create_shforrunning(size =55, atom ="Au", path ="", cores = "16"):
 	complete_dir = os.path.join(root_dir, path)
 	text = ["#!/bin/bash \n", 
 	"mpirun -np " + str(cores)+ " aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
-	#print(text)
+	
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
 		fh.close()	
@@ -285,7 +280,7 @@ def create_shforrunning_name(name="Name.out", path ="", cores = "16"):
 	complete_dir = os.path.join(root_dir, path)
 	text = ["#!/bin/bash \n", 
 	"mpirun -np " + str(cores)+ " aims.171221_1.scalapack.mpi.x < "+complete_dir +"/control.in > "+ complete_dir + "/" +file_name_out+"\n"]
-	#print(text)
+	
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
 		fh.close()	
@@ -441,9 +436,7 @@ def create_control_in(path =""):
 	'#    hydro 5 g 15.2']
 
 	file_controlin = path + "/control.in"
-	#print("Creating :" + file_controlin)
 	with open(file_controlin, "w") as fh:
-	#print(text)
 		fh.writelines(text)
 		fh.close()
 
@@ -562,12 +555,10 @@ def Proof_convergence(atom, size,  complete_path):
 	converged = False 
 	energy = 0 
 	complete_path.replace("\n", "")
-	#print("Variables (atom, size,  complete_path) : ", atom, size,  complete_path)
 	try :		
 		#with cd(complete_path):
 			#grep_cmd =shlex.split('grep " Total energy of the DFT / Hartree-Fock s.c.f. calculation"      {}/nohup.out'.format(directory_name))
 		grep_cmd ='grep "Total energy of the DFT / Hartree-Fock s.c.f. calculation"  {}/{}{}.out'.format(complete_path.replace("\n", ""), atom, str(size))	
-		#print("Command = " , grep_cmd)
 		#process =subprocess.run(grep_cmd,shell=True, check=True, universal_newlines=True,stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 		#output = process.stdout
 		#print(output)
@@ -577,7 +568,6 @@ def Proof_convergence(atom, size,  complete_path):
 		output_string=str(output)
 		vec1=output_string.split("   :   ")
 		energy = float(vec1[1].split("eV")[0])
-		#print("Energy =" , energy)
 		converged = True
 	
 	except :
@@ -845,7 +835,6 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	"module load python/3.7.6 \n",
 	"python3 {}/run_{}.py \n".format(complete_path,atom + str(size))]
 	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
-	#print(text)
 	with open(file_name_sh, "w") as fh: 
 		fh.writelines(text)
 
@@ -861,14 +850,14 @@ def run_calc(filename):
 	#subprocess.call(run_raw,universal_newlines = True, shell = True)
 	process= subprocess.run(run_raw, check=True, stdout=subprocess.PIPE, universal_newlines=True) 
 	output = process.stdout
-	print(output)	
+	print("Output", output)	
 
 
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
 	create_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
-	print(file_bsub)
+	print("file bsub:", file_bsub)
 	run_calc(file_bsub)
 
 
@@ -1073,9 +1062,10 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 		print("Data last step accesible")
 
 def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	print("Selected Energy: ", selected_energy)
+	#print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected]+"\n")
 	print(text_selecting)
