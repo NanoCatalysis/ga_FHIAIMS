@@ -1097,7 +1097,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 		fh.close()
 	
-	if mutated_energy <= selected_energy:
+	if int(mutated_energy) <= selected_energy:
 		print("Mutation worked :")
 		new_energies = Energies
 		new_energies[index_selected] = mutated_energy
