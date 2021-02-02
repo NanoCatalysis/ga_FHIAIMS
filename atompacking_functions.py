@@ -1050,6 +1050,7 @@ def read_data(filename="",path="./"):
             directories_1.append(vector_line[4])
     return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1, step, Number_ofGenerations
 	
+
 def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	try:	
 		#check_if_files_exists()
