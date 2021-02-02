@@ -1086,6 +1086,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 
 	E_min= min(Energies)
 	E_max = max(Energies)
+	index_min = Energies.index(E_min)
 
 	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
 	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
@@ -1097,10 +1098,10 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 		fh.close()
 	
-	if int(mutated_energy) <= int(selected_energy[0]):
+	if int(mutated_energy) <= int(E_min):
 		print("Mutation worked :")
 		new_energies = Energies
-		new_energies[index_selected] = mutated_energy
+		new_energies[index_min] = mutated_energy
 		Normalized_new_energies=Normalize_energies(new_energies)
 		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
 		probabilities = probability_i(fitnessed_new_energies)
