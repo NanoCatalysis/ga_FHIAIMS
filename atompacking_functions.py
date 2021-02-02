@@ -1028,6 +1028,10 @@ def read_data(filename="",path="./"):
     with open(path+filename, "r") as f:
         lines_read=f.readlines()
         f.close()
+	string_steps = lines_read[0]
+	vector_steps = string_steps.split("/")
+	step= int(vector_steps[0])
+	Number_ofGenerations= int(vector_steps[1])
     lines=lines_read[2:]
     print(lines)
     Energies_1=[]
@@ -1044,7 +1048,7 @@ def read_data(filename="",path="./"):
             fitnessed_energies_1.append(float(vector_line[2]))
             probabilities_1.append(float(vector_line[3]))
             directories_1.append(vector_line[4])
-    return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1 
+    return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1, step, Number_ofGenerations
 	
 def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	try:	
@@ -1063,7 +1067,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 
 def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	print("selecting energy from: ", data_last_step)
-	Energies, Normalized_energies, fitnessed_energies, probabilities, directories = read_data(filename=data_last_step,path="") 
+	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	#print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
@@ -1092,6 +1096,18 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 		fh.close()
+	
+	if mutated_energy <= selected_energy:
+		print("Mutation worked :")
+		new_energies = Energies
+		new_energies[index_selected] = mutated_energy
+		Normalized_new_energies=Normalize_energies(new_energies)
+		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
+		probabilities = probability_i(fitnessed_new_energies)
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+	else :
+		print("Mutation didn't work")	
+	
 
 
 def run_file(path="", filename= './shforrunning.sh'):
