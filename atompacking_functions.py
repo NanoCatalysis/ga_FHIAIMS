@@ -1032,7 +1032,7 @@ def read_data(filename="",path="./"):
     vector_steps = string_steps.split("/")
     step= int(vector_steps[0])
     Number_ofGenerations= int(vector_steps[1])
-    lines=lines_read[2:]
+    lines=lines_read
     print(lines)
     Energies_1=[]
     Normalized_energies_1=[]
@@ -1043,11 +1043,12 @@ def read_data(filename="",path="./"):
         vector_line=line.replace("\t","").replace("\n","").split(",")
         print(vector_line)
         if vector_line != ['']:
-            Energies_1.append(float(vector_line[0]))
-            Normalized_energies_1.append(float(vector_line[1]))
-            fitnessed_energies_1.append(float(vector_line[2]))
-            probabilities_1.append(float(vector_line[3]))
-            directories_1.append(vector_line[4])
+            Energies_1.append(float(vector_line[1]))
+            Normalized_energies_1.append(float(vector_line[2]))
+            fitnessed_energies_1.append(float(vector_line[3]))
+            probabilities_1.append(float(vector_line[4]))
+            directories_1.append(vector_line[5])
+	print("Energies", Energies_1,"Normalized energies", Normalized_energies_1,"fitenesed: ", fitnessed_energies_1,"probs:", probabilities_1,"dirs:" directories_1,"step", step,"nmumber of steps", Number_ofGenerations)		
     return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1, step, Number_ofGenerations
 
 def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
