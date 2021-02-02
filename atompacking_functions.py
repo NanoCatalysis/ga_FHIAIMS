@@ -1028,10 +1028,10 @@ def read_data(filename="",path="./"):
     with open(path+filename, "r") as f:
         lines_read=f.readlines()
         f.close()
-	string_steps = lines_read[0]
-	vector_steps = string_steps.split("/")
-	step= int(vector_steps[0])
-	Number_ofGenerations= int(vector_steps[1])
+    string_steps = lines_read[0]
+    vector_steps = string_steps.split("/")
+    step= int(vector_steps[0])
+    Number_ofGenerations= int(vector_steps[1])
     lines=lines_read[2:]
     print(lines)
     Energies_1=[]
@@ -1049,7 +1049,6 @@ def read_data(filename="",path="./"):
             probabilities_1.append(float(vector_line[3]))
             directories_1.append(vector_line[4])
     return Energies_1, Normalized_energies_1, fitnessed_energies_1, probabilities_1, directories_1, step, Number_ofGenerations
-	
 
 def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
 	try:	
