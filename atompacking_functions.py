@@ -1043,8 +1043,8 @@ def read_data(filename="",path="./"):
     [print(x) for x in lines ]
     for line in lines:
         vector_line=line.replace("\t","").replace("\n","").split(",")
-	print("Vector line")
-	[print(x) for x in vector_line ]
+        print("Vector line")
+        [print(x) for x in vector_line ]
         print(vector_line)
     #    if vector_line != ['']:
     #        Energies_1.append(float(vector_line[1]))
