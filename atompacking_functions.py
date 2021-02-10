@@ -1043,10 +1043,10 @@ def read_data(filename="",path="./"):
     [print(x) for x in lines ]
     for line in lines:
         vector_line=line.replace("\t","").replace("\n","").split(",")
-        print("Vector line")
+        print("index: ",lines.index(line),"Vector line")
         [print(x) for x in vector_line ]
         print(vector_line)
-        if vector_line != [''] and lines.index(line) > 0:
+        if vector_line != [''] and lines.index(line) > 1:
             Energies_1.append(float(vector_line[1]))
             Normalized_energies_1.append(float(vector_line[2]))
             fitnessed_energies_1.append(float(vector_line[3]))
