@@ -1049,8 +1049,7 @@ def read_data(filename="",path="./"):
         print("index: ",lines.index(line),"Vector line")
         [print(x) for x in vector_line ]
         print(vector_line)
-	len_vector = len(vector_line)
-
+        len_vector = len(vector_line)
         if vector_line != [''] and vector_line!= vector_headers and len_vector > 1:
             Energies_1.append(float(vector_line[0]))
             Normalized_energies_1.append(float(vector_line[1]))
