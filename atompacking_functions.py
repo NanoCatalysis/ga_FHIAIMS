@@ -6,6 +6,7 @@ import shlex
 import time 
 import os 
 import datetime
+import re
 
 ###### Geometric functions
 
@@ -1025,6 +1026,7 @@ def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], f
 
 
 def read_data(filename="",path="./"):
+    vector_headers = ['Energies', '  Normalized_energies', ' fitnessed_energies', ' prob', ' dir ']
     with open(path+filename, "r") as f:
         lines_read=f.readlines()
         f.close()
@@ -1040,13 +1042,16 @@ def read_data(filename="",path="./"):
     probabilities_1=[]
     directories_1=[]
     print("Lines:")
+    #x = re.search("^The.*Spain$", txt)
     [print(x) for x in lines ]
     for line in lines:
         vector_line=line.replace("\t","").replace("\n","").split(",")
         print("index: ",lines.index(line),"Vector line")
         [print(x) for x in vector_line ]
         print(vector_line)
-        if vector_line != [''] and lines.index(line) > 1:
+	len_vector = len(vector_line)
+
+        if vector_line != [''] and vector_line!= vector_headers and len_vector > 1:
             Energies_1.append(float(vector_line[0]))
             Normalized_energies_1.append(float(vector_line[1]))
             fitnessed_energies_1.append(float(vector_line[2]))
