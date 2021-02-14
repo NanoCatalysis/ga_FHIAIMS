@@ -805,8 +805,8 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'af.complete_cicle_mutation(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores ),
-	'af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
+	'af.complete_cicle_mutation(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
+	#'af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
 	#'af.Cicle_mutation(data_last_step="{}/{}/data_last_step.txt", path = "{}", name="", cores ={}, file_energies="{}", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
 	]
 	with open(file_name_out, "w") as fh: 
@@ -946,7 +946,7 @@ def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, pa
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	Number_ofsteps=Number_ofGenerations(Size)
 	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
-	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
+	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="w",step=0, Number_ofGenerations=Number_ofsteps)
 	return file_energies, data_last_step
 
 def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
@@ -1123,8 +1123,7 @@ def run_file(path="", filename= './shforrunning.sh'):
 	with cd(path):
 		subprocess.call(filename,universal_newlines = True, shell = True)
 
-#check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 )
-#Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52)
+
 
 def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
 	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
