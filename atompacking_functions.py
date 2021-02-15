@@ -1024,6 +1024,11 @@ def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], f
 		fh.close()	
 	return file_energies
 
+def remove_file(filename=""):
+	if os.path.exists(filename):
+  		os.remove(filename)
+	else:
+  		print("The file does not exist")
 
 def read_data(filename="",path="./"):
     vector_headers = ['Energies', '  Normalized_energies', ' fitnessed_energies', ' prob', ' dir ']
@@ -1113,6 +1118,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		Normalized_new_energies=Normalize_energies(new_energies)
 		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
 		probabilities = probability_i(fitnessed_new_energies)
+		remove_file(filename=path +"/"+ "data_last_step.txt")
 		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 	else :
 		print("Mutation didn't work")	
