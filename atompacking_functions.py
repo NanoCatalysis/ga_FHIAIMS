@@ -1079,6 +1079,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 		print("Data last step accesible")
 
 def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+	pool_size = Pool_size(N=Size)
 	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
@@ -1097,36 +1098,59 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
 
-	E_min= min(Energies)
-	E_max = max(Energies)
-	index_min = Energies.index(E_min)
+	#E_min= min(Energies)
+	#E_max = max(Energies)
+	#index_min = Energies.index(E_min)
 
 	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
-	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
-	fitnessed_mutated = f_tanh( Normalized_mutated_energy)
-	new_energies = Energies
-	new_energies[index_min] = mutated_energy
-	Normalized_new_energies=Normalize_energies(new_energies)
-	fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
-	new_probabilities = probability_i(fitnessed_new_energies)
-	new_directories= directories
-	new_directories[index_min] = path_mutated
-	new_index = new_energies.index(mutated_energy)
-	
-	with open(file_energies, "a") as fh:
-		fh.write("After mutation:\n")
-		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-		fh.write(str( mutated_energy)+",\t"+ str(Normalized_new_energies[new_index]) + ",\t"+ str(fitnessed_new_energies[new_index]) +",\t"+ str(new_probabilities[new_index]) + ",\t" + path_mutated+"\n")	
-		fh.close()
-	
-	if float(mutated_energy) < float(E_min):
-		print("Mutation worked :")
+	#Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+	#fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	if converged == True:
+		new_energies = Energies
+		new_energies.append(mutated_energy)
+		new_E_max = max(new_energies)
+		new_E_max_index= Energies.index(new_E_max)
+		new_directories= directories
+		new_directories.append(path_mutated)
+
+		new_energies.remove(new_E_max)
+		new_directories.remove(new_directories[new_E_max_index])
+		new_index = new_energies.index(mutated_energy)
+
+		Normalized_new_energies=Normalize_energies(new_energies)
+		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
+		new_probabilities = probability_i(fitnessed_new_energies)
+
+		#new_directories[index_min] = path_mutated
 		
-		remove_file(filename=path +"/"+ "data_last_step.txt")
-		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
-	else :
-		print("Mutation didn't work")	
 	
+
+		with open(file_energies, "a") as fh:
+			fh.write("After mutation:\n")
+			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+			for i in range(len(new_energies)):
+				fh.write(str( new_energies[i])+",\t"+ str(Normalized_new_energies[i]) + ",\t"+ str(fitnessed_new_energies[i]) + ",\t"+ str(new_probabilities[i])+",\t" + new_directories[i]+"\n")
+			fh.close()
+
+		remove_file(filename=path +"/"+ "data_last_step.txt")
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=new_directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+
+
+		#if float(mutated_energy) < float(E_min):
+		#	print("Mutation worked :")
+		#	
+		#	remove_file(filename=path +"/"+ "data_last_step.txt")
+		#	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+		#else :
+		#	print("Mutation didn't work")
+	else:
+		print("Mutation didn't work")
+		remove_file(filename=path +"/"+ "data_last_step.txt")
+		#Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+
+ 	
+
 
 
 def run_file(path="", filename= './shforrunning.sh'):
@@ -1160,3 +1184,7 @@ def run_dirs(path =""):
 			#print("ster: ", ster)
 			#process =subprocess.call(my_file, universal_newlines=True)
 		
+##rerankear el pool y conservar los n mejores
+def minN(elements, n):
+    return sorted(elements, reverse=False)[:n] 
+## rotar sobre angulos pphi y rho y cortar en el nuevo z 
