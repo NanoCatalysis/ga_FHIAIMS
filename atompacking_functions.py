@@ -1104,22 +1104,24 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
 	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
 	fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	new_energies = Energies
+	new_energies[index_min] = mutated_energy
+	Normalized_new_energies=Normalize_energies(new_energies)
+	fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
+	new_probabilities = probability_i(fitnessed_new_energies)
+	new_directories= directories
+	new_directories[index_min] = path_mutated
+	new_index = new_energies.index(mutated_energy)
 	
 	with open(file_energies, "a") as fh:
 		fh.write("After mutation:\n")
 		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+		fh.write(str( mutated_energy)+",\t"+ str(Normalized_new_energies[new_index]) + ",\t"+ str(fitnessed_new_energies[new_index]) +",\t"+ str(new_probabilities[new_index]) + ",\t" + path_mutated+"\n")	
 		fh.close()
 	
 	if float(mutated_energy) < float(E_min):
 		print("Mutation worked :")
-		new_energies = Energies
-		new_energies[index_min] = mutated_energy
-		Normalized_new_energies=Normalize_energies(new_energies)
-		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
-		new_probabilities = probability_i(fitnessed_new_energies)
-		new_directories= directories
-		new_directories[index_min] = path_mutated
+		
 		remove_file(filename=path +"/"+ "data_last_step.txt")
 		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 	else :
