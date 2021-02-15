@@ -1121,7 +1121,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		new_directories= directories
 		new_directories[index_min] = path_mutated
 		remove_file(filename=path +"/"+ "data_last_step.txt")
-		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=mutated_energy, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 	else :
 		print("Mutation didn't work")	
 	
