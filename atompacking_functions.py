@@ -1115,7 +1115,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 
 		new_energies.remove(new_E_max)
 		new_directories.remove(new_directories[new_E_max_index])
-		new_index = new_energies.index(mutated_energy)
+		#new_index = new_energies.index(mutated_energy)
 
 		Normalized_new_energies=Normalize_energies(new_energies)
 		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
