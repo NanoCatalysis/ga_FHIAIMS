@@ -735,7 +735,7 @@ def selection_energy(Energies, fitnessed_energies):
 
 ########################################################## Mutate
 
-def kick_atom(atom,r_min=-1, r_max=1):
+def kick_atom(atom,r_min=0, r_max=1):
     
     x_i = atom[0]
     y_i = atom[1]
@@ -788,6 +788,93 @@ def choose_mutation(mutation ="",filename_mutated = "geometry.in", path="", orig
 def create_files_mutation(size=52, atom="",path ="",cores =16):
 	create_control_in(path =path)	
 	create_shforrunning_name(name=atom+ str(size), path=path ,cores =cores)
+
+
+#################################################### code for rotations
+def rotate_over_z(point,angle):
+    if angle == 0:
+        new_point = point
+    else:
+        psi = angle
+        qx =  math.cos(psi) * point[0] - math.sin(psi) * point[1]
+        qy =  math.sin(psi) * point[0] + math.cos(psi) * point[1]
+        qz = point[2] 
+        new_point= [qx,qy,qz]
+    return new_point
+
+def rotate_over_x(point,angle):
+    if angle == 0:
+        new_point = point
+    else:
+        phi= angle
+        qx = point[0]
+        qy =  math.cos(phi) * point[1] - math.sin(phi) * point[2]
+        qz =  math.sin(phi) * point[1] + math.cos(phi) * point[2]
+        new_point= [qx,qy,qz]
+    return new_point
+
+def rotate_over_y(point,angle):
+    if angle == 0:
+        new_point = point
+    else:
+        theta =angle
+        qx =   math.cos(theta) * point[0] + math.sin(theta) * point[2]
+        qz =  -math.sin(theta) * point[0] + math.cos(theta) * point[2]
+        qy = point[1]
+        new_point= [qx,qy,qz]
+    return new_point
+
+def choose_rotations(number_of_rotations =2):
+    list_of_rotations= list(range(3))
+    choices_of_rotations = random.sample(list_of_rotations,number_of_rotations)
+    #print(choices_of_rotations)
+    #angle 1 is over x , angle 2 is over y and angle3 is over z
+    if 0 in choices_of_rotations:
+        angle1 = random.uniform(0, 2 * math.pi)
+    else:
+        angle1 = 0
+    if 1 in choices_of_rotations:
+        angle2 = random.uniform(0, 2 * math.pi)
+    else:
+        angle2 =0
+    if 2 in choices_of_rotations:
+        angle3= random.uniform(0, 2 * math.pi)
+    else:
+        angle3 =0
+    angles=[angle1, angle2, angle3]
+    return angles
+
+def rotate_overxyz(point ,angles):
+    
+    point_x = rotate_over_x(point, angles[0])
+    point_y= rotate_over_y(point_x, angles[1])
+    point_z = rotate_over_z(point_y,angles[2])
+    return point_z
+
+def radius(point):
+    r = math.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
+    return r
+	
+def rotate_matrix_over_xyz(matrix):
+    angles_for_rotation = choose_rotations(number_of_rotations=2)
+    print(angles_for_rotation)
+    matrix_rotated=[]
+    for point_str in matrix:
+        point = []
+        for i in range(3):
+            point.append(float(point_str[i]))
+
+        vector = rotate_overxyz(point, angles=angles_for_rotation)
+        #print(round(radius(point),4),"=", round(radius(vector),4))
+        vector_str=[ str(round(x,4)) for x in vector]
+        vector_str.append(point_str[3])
+        matrix_rotated.append(vector_str)
+
+    return matrix_rotated
+
+	
+#### 3 angle rotation must be applied AzAyAx to preserve orientation 
+
 
 
 
