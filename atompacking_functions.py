@@ -733,7 +733,7 @@ def selection_energy(Energies, fitnessed_energies):
 
 
 
-########################################################## Mutate
+########################################################## code for Mutate
 
 def kick_atom(atom,r_min=0, r_max=1):
     
@@ -854,7 +854,7 @@ def rotate_overxyz(point ,angles):
 def radius(point):
     r = math.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
     return r
-	
+
 def rotate_matrix_over_xyz(matrix):
     angles_for_rotation = choose_rotations(number_of_rotations=2)
     print(angles_for_rotation)
@@ -875,6 +875,31 @@ def rotate_matrix_over_xyz(matrix):
 	
 #### 3 angle rotation must be applied AzAyAx to preserve orientation 
 
+#################################################################  code for Mating 
+
+def order_matrix(matrix):
+    order_z = [x[2] for x in matrix]
+    order_z.sort(reverse = True)
+    ordered_matrix=[]
+    for order_i in order_z:
+        #print(order_i)
+        for x in matrix:
+            if order_i == x[2]:
+                ordered_matrix.append(x)
+    return ordered_matrix   
+
+def cut_n_splice(matrix1, matrix2, percentage_cut):
+    if len(matrix1) == len(matrix2) and len(matrix1[0])== len(matrix2[0]):
+        size_of_cut_int_1= int(round(len(matrix1)*(percentage_cut/100),0))
+        print("size1",size_of_cut_int_1)
+        size_of_cut_int_2 = len(matrix)-size_of_cut_int_1
+        print("size2",size_of_cut_int_2)
+        new_matrix =[]
+        for i in range(size_of_cut_int_1):
+            new_matrix.append(matrix1[i])
+        for j in range(size_of_cut_int_2):
+            new_matrix.append(matrix2[j+ size_of_cut_int_1])
+        return new_matrix;  
 
 
 
@@ -1020,7 +1045,7 @@ def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, pa
 
 	E_max = max(Energies)
 	E_min = min(Energies)
-	
+	E_min_2 = min([x for x in a if x != min(Energies)]) 
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
@@ -1055,7 +1080,8 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	E_max = max(Energies)
 	E_min = min(Energies)
-	
+	E_min_2 = min([x for x in a if x != min(Energies)])
+
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
@@ -1076,11 +1102,14 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
 	print(text_selecting)
+	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2))
+
 	with open(file_energies, "a") as fa:
 		fa.write(text_selecting)
+		fa.write(mating_text)
 		fa.close()
 
-	############################mutation
+	############################  mutation
 
 	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
 	#append_file(text_to_append=path_mutated, file_to_append=file_dirs)
@@ -1099,6 +1128,21 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 		fh.close()
 
+	#path_mating = create_folder(name="{}_mating".format(name), path= path)
+	#kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
+	#create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	#run_file(path=path_mutated, filename= './shforrunning.sh')
+#
+#
+	#converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
+	#Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+	#fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	#
+	#with open(file_energies, "a") as fh:
+	#	fh.write("After mutation:\n")
+	#	fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+	#	fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+	#	fh.close()
 #text option is "a" for append , "w" for write
 def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None,Number_ofGenerations=32): 
 	file_energies = path+"/" + filename
