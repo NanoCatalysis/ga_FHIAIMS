@@ -1046,7 +1046,7 @@ def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, pa
 
 	E_max = max(Energies)
 	E_min = min(Energies)
-	E_min_2 = min([x for x in a if x != min(Energies)]) 
+	E_min_2 = min([x for x in Energies if x != min(Energies)]) 
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
