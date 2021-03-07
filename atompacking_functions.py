@@ -935,9 +935,10 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'af.complete_cicle_mutation(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
+	#'af.complete_cicle_mutation(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={}) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
 	#'af.Mutate(data_last_step="{}/{}/data_last_step.txt", path = "{}",  cores ={}, file_energies="{}/{}/energies.txt", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
 	#'af.Cicle_mutation(data_last_step="{}/{}/data_last_step.txt", path = "{}", name="", cores ={}, file_energies="{}", Atom ="{}", Size={})\n'.format(THIS_FOLDER, path,path,cores,THIS_FOLDER, path,atom,size )
+	'af.complete_cicle_ga(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -1347,9 +1348,91 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		#Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations
 		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 
- 	
+def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+	pool_size = Pool_size(N=Size)
+	print("selecting energy from: ", data_last_step)
+	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
+	selected_energy = selection_energy(Energies, fitnessed_energies)
+	Energies_minus_minimal = [x for x in Energies if x != min(Energies)]
+	fitnessed_energies_minus_minimal= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(min(Energies))]
+	probabilities_minus_minimal = probability_i(fitnessed_energies_minus_minimal)
+	index_selected = Energies.index(selected_energy[0])
+	selected_energy_2 = selection_energy(Energies_minus_minimal,fitnessed_energies_minus_minimal)
+	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
+	index_selected = Energies.index(selected_energy[0])
+	index_selected_2 = Energies.index(selected_energy_2[0])
+	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])+ "\n"
+	print(text_selecting)
+	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2)) + "\n"
+	mating_text_1 = "Selected energies for mating =" + str(selected_energy) +"with index"+str(index_selected)+" and "+ str(selected_energy_2) +"with index"+str(index_selected_2)+ "\n"
+	with open(file_energies, "a") as fa:
+		fa.write(mating_text)
+		fa.write(mating_text_1)
+		fa.close()
+		
+	path_mating = create_folder(name="{}_mating".format(name), path= path)
+	original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step"
+	original_file_2=str(directories[index_selected_2]).replace("\n", "")+"/geometry.in.next_step"
+	Mating( file1= original_file , file2=original_file_2, percentage_cut=50, filename_mated= "geometry.in", path=path_mating)
+	create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores)
+	run_file(path=path_mating, filename= './shforrunning.sh')
+	converged, mated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mating)
+	Normalized_mated_energy =Normalization(mated_energy, E_min, E_max)
+	fitnessed_mated = f_tanh( Normalized_mated_energy)
+	if converged == True:
+		new_energies = Energies
+		new_energies.append(mated_energy)
+		new_E_max = max(new_energies)
+		new_E_max_index= Energies.index(new_E_max)
+		new_directories= directories
+		new_directories.append(path_mated)
+
+		new_energies.remove(new_E_max)
+		new_directories.remove(new_directories[new_E_max_index])
+		new_index = new_energies.index(mutated_energy)
+		Normalized_new_energies=Normalize_energies(new_energies)
+		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
+		new_probabilities = probability_i(fitnessed_new_energies)
 
 
+		with open(file_energies, "a") as fh:
+			fh.write("After mation:\n")
+			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+			for i in range(len(new_energies)):
+				fh.write(str( new_energies[i])+",\t"+ str(Normalized_new_energies[i]) + ",\t"+ str(fitnessed_new_energies[i]) + ",\t"+ str(new_probabilities[i])+",\t" + new_directories[i]+"\n")
+			fh.close()
+
+		remove_file(filename=path +"/"+ "data_last_step.txt")
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=new_energies, Normalized_energies=Normalized_new_energies, fitnessed_energies=fitnessed_new_energies, probabilities=new_probabilities, directories=new_directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+
+
+	else:
+		print("Mutation didn't work")
+		remove_file(filename=path +"/"+ "data_last_step.txt")		
+		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
+
+def Mutate_or_mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52,percentage_of_mating = 80):
+	mutate_or_mate= select_mutate_or_mate(percentage_of_mating=percentage_of_mating)
+	if mutate_or_mate =="Mate":
+		Mate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
+	elif mutate_or_mate =="Mutate":
+		Mutate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)	
+	print()
+
+def Cicle_ga(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52, percentage_of_mating = 80):
+	try:	
+		#check_if_files_exists()
+		with open(data_last_step, "r") as fa:
+			text=fa.readline()
+			fa.close()
+		text=text.replace("/n","")
+		vector_1 = text.split("/")
+		vector = [str(x) for x in vector_1]
+		for x in range (int(vector[0]), int(vector[1])):
+			print("Step:",vector[0]," of", vector[0])
+			Mutate_or_mate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating = percentage_of_mating)
+	except IOError:
+		print("Data last step accesible")
 
 def run_file(path="", filename= './shforrunning.sh'):
 	with cd(path):
@@ -1362,6 +1445,10 @@ def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	Mutate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
 	Cicle_mutation(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
 
+def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80):
+	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
+	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
+	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
 
 
