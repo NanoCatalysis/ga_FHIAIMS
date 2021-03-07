@@ -1357,6 +1357,8 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	fitnessed_energies_minus_minimal= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(min(Energies))]
 	probabilities_minus_minimal = probability_i(fitnessed_energies_minus_minimal)
 	index_selected = Energies.index(selected_energy[0])
+	E_min = min(Energies)
+	E_min_2 = min(Energies_minus_minimal)
 	selected_energy_2 = selection_energy(Energies_minus_minimal,fitnessed_energies_minus_minimal)
 	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
 	index_selected = Energies.index(selected_energy[0])
