@@ -901,7 +901,7 @@ def cut_n_splice(matrix1, matrix2, percentage_cut):
     if len(matrix1) == len(matrix2) and len(matrix1[0])== len(matrix2[0]):
         size_of_cut_int_1= int(round(len(matrix1)*(percentage_cut/100),0))
         print("size1",size_of_cut_int_1)
-        size_of_cut_int_2 = len(matrix)-size_of_cut_int_1
+        size_of_cut_int_2 = len(matrix1)-size_of_cut_int_1
         print("size2",size_of_cut_int_2)
         new_matrix =[]
         for i in range(size_of_cut_int_1):
