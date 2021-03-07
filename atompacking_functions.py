@@ -727,11 +727,19 @@ def probability_i(fitnessed):
 	p =[round((p_i/sum_fit),5) for p_i in fitnessed]
 	return p
 
-def selection_energy(Energies, fitnessed_energies):
-	energies_rand= random.choices(Energies,weights =fitnessed_energies)
+def selection_energy(Energies, Probabilities = fitnessed_energies):
+	energies_rand= random.choices(Energies,weights =Probabilities)
 	return energies_rand
 
-
+def select_mutate_or_mate(percentage_of_mating):
+    float_mating = percentage_of_mating /100
+    random_number = random.random()
+    response =""
+    if random_number <= float_mating:
+        response ="Mate"
+    else:
+        response ="Mutate"
+    return response 
 
 ########################################################## code for Mutate
 
@@ -902,7 +910,16 @@ def cut_n_splice(matrix1, matrix2, percentage_cut):
             new_matrix.append(matrix2[j+ size_of_cut_int_1])
         return new_matrix;  
 
-
+def Mating( file1 , file2, percentage_cut=50, filename_mated="", path=""):
+	matrix= read_geometry_nextstep(file1)
+	matrix2= read_geometry_nextstep(file2)
+	rotated_matrix = rotate_matrix_over_xyz(matrix)
+	rotated_matrix_2 = rotate_matrix_over_xyz(matrix2)
+	ordered_matrix = order_matrix(rotated_matrix)
+	ordered_matrix_2 = order_matrix(rotated_matrix_2)
+	new_matrix = cut_n_splice(ordered_matrix, ordered_matrix_2, percentage_cut = percentage_cut)
+	print_matrix_geometryin(matrix= new_matrix, name=filename_mated, path=path)
+	
 
 
 ########################################################################
@@ -1081,7 +1098,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	E_max = max(Energies)
 	E_min = min(Energies)
-	E_min_2 = min([x for x in a if x != min(Energies)])
+	Energies_minus_minimal = [x for x in Energies if x != min(Energies)]
 
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
@@ -1092,42 +1109,90 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	print("fitness," , fitnessed_energies)
 	print("probabilities", probabilities)
 	
+	
+	fitnessed_energies_minus_minimal= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(min(Energies))]
+	probabilities_minus_minimal = probability_i(fitnessed_energies_minus_minimal)
+
+	print("fitnessed energies minus minimal: ", fitnessed_energies_minus_minimal)
+	print("probabilities minus minimal: ", probabilities_minus_minimal)
+
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	Number_ofsteps=Number_ofGenerations(Size)
 	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	print("Selected Energy: ", selected_energy)
+	selected_energy_2 = selection_energy(Energies_minus_minimal,fitnessed_energies_minus_minimal)
+	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
 	index_selected = Energies.index(selected_energy[0])
-
-	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])
+	index_selected_2 = Energies.index(selected_energy_2[0])
+	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])+ "\n"
 	print(text_selecting)
-	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2))
-
+	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2)) + "\n"
+	mating_text_1 = "Selected energies for mating =" + str(selected_energy) +"with index"+str(index_selected)+" and "+ str(selected_energy_2) +"with index"+str(index_selected_2)+ "\n"
+	mutate_or_mate= select_mutate_or_mate(percentage_of_mating=80)
+	choice_made = "Mutate or Mate "+ mutate_or_mate +"\n"
+	print(choice_made)
 	with open(file_energies, "a") as fa:
+		fa.write(choice_made)
 		fa.write(text_selecting)
 		fa.write(mating_text)
+		fa.write(mating_text_1)
 		fa.close()
 
 	############################  mutation
+	if mutate_or_mate =="Mutate":
+		path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+		#append_file(text_to_append=path_mutated, file_to_append=file_dirs)
+		kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
+		create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+		run_file(path=path_mutated, filename= './shforrunning.sh')
 
-	path_mutated = create_folder(name="{}_mutated".format(name), path= path)
-	#append_file(text_to_append=path_mutated, file_to_append=file_dirs)
-	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
-	run_file(path=path_mutated, filename= './shforrunning.sh')
 
+		converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
+		Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+		fitnessed_mutated = f_tanh( Normalized_mutated_energy)
 
-	converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
-	Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
-	fitnessed_mutated = f_tanh( Normalized_mutated_energy)
-	
-	with open(file_energies, "a") as fh:
-		fh.write("After mutation:\n")
-		fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-		fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
-		fh.close()
+		with open(file_energies, "a") as fh:
+			fh.write("After mutation:\n")
+			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+			fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+			fh.close()
+	elif mutate_or_mate =="Mate":
+		path_mating = create_folder(name="{}_mating".format(name), path= path)
+		original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step"
+		original_file_2=str(directories[index_selected_2]).replace("\n", "")+"/geometry.in.next_step"
+		Mating( file1= original_file , file2=original_file_2, percentage_cut=50, filename_mated= "geometry.in", path=path_mating)
+		create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores)
+		run_file(path=path_mating, filename= './shforrunning.sh')
+
+		converged, mated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mating)
+		Normalized_mated_energy =Normalization(mated_energy, E_min, E_max)
+		fitnessed_mated = f_tanh( Normalized_mated_energy)
+
+		with open(file_energies, "a") as fh:
+			fh.write("After mating:\n")
+			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+			fh.write(str( mated_energy)+",\t"+ str(Normalized_mated_energy) + ",\t"+ str(fitnessed_mated) + ",\t" + path_mated+"\n")	
+			fh.close()
+		## next steps rotate order cut_n_splice
+
+	#path_mutated = create_folder(name="{}_mutated".format(name), path= path)
+	##append_file(text_to_append=path_mutated, file_to_append=file_dirs)
+	#kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
+	#create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	#run_file(path=path_mutated, filename= './shforrunning.sh')
+#
+#
+	#converged, mutated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mutated)
+	#Normalized_mutated_energy =Normalization(mutated_energy, E_min, E_max)
+	#fitnessed_mutated = f_tanh( Normalized_mutated_energy)
+	#
+	#with open(file_energies, "a") as fh:
+	#	fh.write("After mutation:\n")
+	#	fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
+	#	fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
+	#	fh.close()
 
 	#path_mating = create_folder(name="{}_mating".format(name), path= path)
 	#kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
@@ -1144,6 +1209,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	#	fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 	#	fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 	#	fh.close()
+	
 #text option is "a" for append , "w" for write
 def print_energies(filename="",path="./", Energies=[], Normalized_energies=[], fitnessed_energies=[], probabilities=[], directories=[],text_option="a",step=None,Number_ofGenerations=32): 
 	file_energies = path+"/" + filename
