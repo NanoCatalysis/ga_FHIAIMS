@@ -727,7 +727,7 @@ def probability_i(fitnessed):
 	p =[round((p_i/sum_fit),5) for p_i in fitnessed]
 	return p
 
-def selection_energy(Energies, Probabilities = fitnessed_energies):
+def selection_energy(Energies, Probabilities ):
 	energies_rand= random.choices(Energies,weights =Probabilities)
 	return energies_rand
 
