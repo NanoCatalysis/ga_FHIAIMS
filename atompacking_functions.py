@@ -1158,7 +1158,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fitnessed_mutated = f_tanh( Normalized_mutated_energy)
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mutation: ",mutated_energy ,"\n")
+			fh.write("After mutation: "+ str(mutated_energy)+"\n")
 			## imprimir la energia 
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
@@ -1176,7 +1176,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fitnessed_mated = f_tanh( Normalized_mated_energy)
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mating: ",mated_energy,"\n")
+			fh.write("After mating: "+ str(mated_energy) + "\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			fh.write(str( mated_energy)+",\t"+ str(Normalized_mated_energy) + ",\t"+ str(fitnessed_mated) + ",\t" + path_mating+"\n")	
 			fh.close()
@@ -1329,7 +1329,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mutation:",mutated_energy ,"\n")
+			fh.write("After mutation:" + str(mutated_energy) + "\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			for i in range(len(new_energies)):
 				fh.write(str( new_energies[i])+",\t"+ str(Normalized_new_energies[i]) + ",\t"+ str(fitnessed_new_energies[i]) + ",\t"+ str(new_probabilities[i])+",\t" + new_directories[i]+"\n")
@@ -1405,7 +1405,7 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mating:\n")
+			fh.write("After mating:"+ str(mated_energy) +"\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			for i in range(len(new_energies)):
 				fh.write(str( new_energies[i])+",\t"+ str(Normalized_new_energies[i]) + ",\t"+ str(fitnessed_new_energies[i]) + ",\t"+ str(new_probabilities[i])+",\t" + new_directories[i]+"\n")
