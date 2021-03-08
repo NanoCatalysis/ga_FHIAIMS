@@ -1119,21 +1119,21 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	Energies_minus_selected = [x for x in Energies if x != selected_energy]
-	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy)]
+	Energies_minus_selected = [x for x in Energies if x != selected_energy[0]]
+	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy[0])]
 	probabilities_minus_selected = probability_i(fitnessed_energies_minus_selected)
 
 	print("fitnessed energies minus selected: ", fitnessed_energies_minus_selected)
 	print("probabilities minus selected: ", probabilities_minus_selected)
 
 	selected_energy_2 = selection_energy(Energies_minus_selected,fitnessed_energies_minus_selected)
-	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
+	print("Selected Energy 1: ", selected_energy[0],"\t 2: ", selected_energy_2[0])
 	index_selected = Energies.index(selected_energy[0])
 	index_selected_2 = Energies.index(selected_energy_2[0])
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])+ "\n"
 	print(text_selecting)
 	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2)) + "\n"
-	mating_text_1 = "Selected energies for mating =" + str(selected_energy) +"with index"+str(index_selected)+" and "+ str(selected_energy_2) +"with index"+str(index_selected_2)+ "\n"
+	mating_text_1 = "Selected energies for mating =" + str(selected_energy[0]) +"with index"+str(index_selected)+" and "+ str(selected_energy_2[0]) +"with index"+str(index_selected_2)+ "\n"
 	mutate_or_mate= select_mutate_or_mate(percentage_of_mating=80)
 	choice_made = "Mutate or Mate "+ mutate_or_mate +"\n"
 	print(choice_made)
@@ -1357,8 +1357,8 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	Energies_minus_selected = [x for x in Energies if x != selected_energy]
-	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy)]
+	Energies_minus_selected = [x for x in Energies if x != selected_energy[0]]
+	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy[0])]
 	probabilities_minus_selected = probability_i(fitnessed_energies_minus_selected)
 	index_selected = Energies.index(selected_energy[0])
 	E_min = min(Energies)
@@ -1366,13 +1366,13 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	E_max= max(Energies)
 	#seleccionar menos el seleccionado#
 	selected_energy_2 = selection_energy(Energies_minus_selected,fitnessed_energies_minus_selected)
-	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
+	print("Selected Energy 1: ", selected_energy[0]," \t 2: ", selected_energy_2[0])
 	index_selected = Energies.index(selected_energy[0])
 	index_selected_2 = Energies.index(selected_energy_2[0])
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])+ "\n"
 	print(text_selecting)
 	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2)) + "\n"
-	mating_text_1 = "Selected energies for mating =" + str(selected_energy) +"with index"+str(index_selected)+" and "+ str(selected_energy_2) +"with index"+str(index_selected_2)+ "\n"
+	mating_text_1 = "Selected energies for mating =" + str(selected_energy[0]) +"with index"+str(index_selected)+" and "+ str(selected_energy_2[0]) +"with index"+str(index_selected_2)+ "\n"
 	with open(file_energies, "a") as fa:
 		fa.write(mating_text)
 		fa.write(mating_text_1)
