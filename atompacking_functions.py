@@ -1100,7 +1100,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	E_max = max(Energies)
 	E_min = min(Energies)
 	Energies_minus_minimal = [x for x in Energies if x != min(Energies)]
-
+	E_min_2 = min(Energies_minus_minimal)
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
@@ -1174,7 +1174,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		with open(file_energies, "a") as fh:
 			fh.write("After mating:\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
-			fh.write(str( mated_energy)+",\t"+ str(Normalized_mated_energy) + ",\t"+ str(fitnessed_mated) + ",\t" + path_mated+"\n")	
+			fh.write(str( mated_energy)+",\t"+ str(Normalized_mated_energy) + ",\t"+ str(fitnessed_mated) + ",\t" + path_mating+"\n")	
 			fh.close()
 		## next steps rotate order cut_n_splice
 
@@ -1388,11 +1388,11 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 		new_E_max = max(new_energies)
 		new_E_max_index= Energies.index(new_E_max)
 		new_directories= directories
-		new_directories.append(path_mated)
+		new_directories.append(path_mating)
 
 		new_energies.remove(new_E_max)
 		new_directories.remove(new_directories[new_E_max_index])
-		new_index = new_energies.index(mutated_energy)
+		new_index = new_energies.index(mated_energy)
 		Normalized_new_energies=Normalize_energies(new_energies)
 		fitnessed_new_energies= calculate_fitness(Normalized_new_energies,func = "tanh")
 		new_probabilities = probability_i(fitnessed_new_energies)
