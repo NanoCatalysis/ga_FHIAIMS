@@ -1099,8 +1099,9 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	E_max = max(Energies)
 	E_min = min(Energies)
-	Energies_minus_minimal = [x for x in Energies if x != min(Energies)]
-	E_min_2 = min(Energies_minus_minimal)
+	Energies_minus_selected = [x for x in Energies if x != min(Energies)]
+	###### notas 08/03/2021 no es menos el minimo es menos el elegido 
+	E_min_2 = min(Energies_minus_selected)
 	Normalized_energies=Normalize_energies(Energies)
 	fitnessed_energies= calculate_fitness(Normalized_energies,func = "tanh")
 	probabilities = probability_i(fitnessed_energies)
@@ -1111,19 +1112,21 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	print("probabilities", probabilities)
 	
 	
-	fitnessed_energies_minus_minimal= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(min(Energies))]
-	probabilities_minus_minimal = probability_i(fitnessed_energies_minus_minimal)
-
-	print("fitnessed energies minus minimal: ", fitnessed_energies_minus_minimal)
-	print("probabilities minus minimal: ", probabilities_minus_minimal)
-
+	
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	Number_ofsteps=Number_ofGenerations(Size)
 	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	selected_energy_2 = selection_energy(Energies_minus_minimal,fitnessed_energies_minus_minimal)
+	Energies_minus_selected = [x for x in Energies if x != selected_energy]
+	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy)]
+	probabilities_minus_selected = probability_i(fitnessed_energies_minus_selected)
+
+	print("fitnessed energies minus selected: ", fitnessed_energies_minus_selected)
+	print("probabilities minus selected: ", probabilities_minus_selected)
+
+	selected_energy_2 = selection_energy(Energies_minus_selected,fitnessed_energies_minus_selected)
 	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
 	index_selected = Energies.index(selected_energy[0])
 	index_selected_2 = Energies.index(selected_energy_2[0])
@@ -1155,7 +1158,8 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fitnessed_mutated = f_tanh( Normalized_mutated_energy)
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mutation:\n")
+			fh.write("After mutation: ",mutated_energy ,"\n")
+			## imprimir la energia 
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			fh.write(str( mutated_energy)+",\t"+ str(Normalized_mutated_energy) + ",\t"+ str(fitnessed_mutated) + ",\t" + path_mutated+"\n")	
 			fh.close()
@@ -1172,7 +1176,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fitnessed_mated = f_tanh( Normalized_mated_energy)
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mating:\n")
+			fh.write("After mating: ",mated_energy,"\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			fh.write(str( mated_energy)+",\t"+ str(Normalized_mated_energy) + ",\t"+ str(fitnessed_mated) + ",\t" + path_mating+"\n")	
 			fh.close()
@@ -1325,7 +1329,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	
 
 		with open(file_energies, "a") as fh:
-			fh.write("After mutation:\n")
+			fh.write("After mutation:",mutated_energy ,"\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			for i in range(len(new_energies)):
 				fh.write(str( new_energies[i])+",\t"+ str(Normalized_new_energies[i]) + ",\t"+ str(fitnessed_new_energies[i]) + ",\t"+ str(new_probabilities[i])+",\t" + new_directories[i]+"\n")
@@ -1353,14 +1357,15 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
-	Energies_minus_minimal = [x for x in Energies if x != min(Energies)]
-	fitnessed_energies_minus_minimal= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(min(Energies))]
-	probabilities_minus_minimal = probability_i(fitnessed_energies_minus_minimal)
+	Energies_minus_selected = [x for x in Energies if x != selected_energy]
+	fitnessed_energies_minus_selected= [fitnessed_energies[i] for i in range(len(fitnessed_energies)) if i != Energies.index(selected_energy)]
+	probabilities_minus_selected = probability_i(fitnessed_energies_minus_selected)
 	index_selected = Energies.index(selected_energy[0])
 	E_min = min(Energies)
-	E_min_2 = min(Energies_minus_minimal)
+	E_min_2 = min(Energies_minus_selected)
 	E_max= max(Energies)
-	selected_energy_2 = selection_energy(Energies_minus_minimal,fitnessed_energies_minus_minimal)
+	#seleccionar menos el seleccionado#
+	selected_energy_2 = selection_energy(Energies_minus_selected,fitnessed_energies_minus_selected)
 	print("Selected Energy 1: ", selected_energy,"\t 2: ", selected_energy_2)
 	index_selected = Energies.index(selected_energy[0])
 	index_selected_2 = Energies.index(selected_energy_2[0])
