@@ -757,7 +757,12 @@ def kick_atom(atom,r_min=0, r_max=1):
     z =round(resize*2*(r * math.cos(phi)) + z_i,5)
     vector = [x,y,z]
     return  vector
-
+def recenter_cluster(filename = ""):
+	matriz = read_geometry_nextstep(filename=filename)
+	center_monoatomic = [round(sum([float(x[i]) for x in matriz])/(len(matriz)),4) for i in range(3)]
+	recentered_matrix_num = [[round(float(x[i]) - center_monoatomic[i],4)for i in range(3)] for x in matriz] 
+	recentered_matrix = [[str(recentered_matrix_num[i][0]),str(recentered_matrix_num[i][1]),str(recentered_matrix_num[i][2]),matriz[i][3]] for i in range(len(matriz))]
+	return recentered_matrix
 
 
 def read_geometry_nextstep(filename=""):
@@ -775,7 +780,7 @@ def read_geometry_nextstep(filename=""):
 
 
 def kick(filename = ""):
-	lineas= read_geometry_nextstep(filename=filename)
+	lineas= recenter_cluster(filename=filename)
 	coord_txt = [linea[:-1] for linea in  lineas]
 	atom_list = [linea[-1] for linea in  lineas]
 	coordenadas= [[float(texto) for texto in linea] for linea in coord_txt]
@@ -911,8 +916,8 @@ def cut_n_splice(matrix1, matrix2, percentage_cut):
         return new_matrix;  
 
 def Mating( file1 , file2, percentage_cut=50, filename_mated="", path=""):
-	matrix= read_geometry_nextstep(file1)
-	matrix2= read_geometry_nextstep(file2)
+	matrix= recenter_cluster(file1)
+	matrix2= recenter_cluster(file2)
 	rotated_matrix = rotate_matrix_over_xyz(matrix)
 	rotated_matrix_2 = rotate_matrix_over_xyz(matrix2)
 	ordered_matrix = order_matrix(rotated_matrix)
