@@ -1081,9 +1081,9 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 
 	return file_dirs
 
-def create_all_files_reinit(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
-	path_master = create_folder(name=Atom+str(Size), path= Path)
-	print("Path :", path_master)
+def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1"):
+	#path_master = create_folder(name=Atom+str(Size), path= Path)
+	#print("Path :", path_master)
 	#dirs = create_pool(N= Size, atom = Atom, path =path_master, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
 	#print("Creating : file of directories" )
 	#file_dirs= path_master + "/file_dirs.txt"
