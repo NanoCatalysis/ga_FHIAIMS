@@ -997,7 +997,7 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 
 def create_qsub_reinit(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	
-	file_name_sh =  path+"/" + "qsub_fhi.sh"
+	file_name_sh =  path+"/" + "qsub_fhi_rerun.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	complete_path =  os.path.join(THIS_FOLDER,path)
 	
@@ -1037,7 +1037,7 @@ def run_calc(filename):
 
 def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
-	create_reinit_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
+	create_init_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
 	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
 	print("file bsub:", file_bsub)
 	run_calc(file_bsub)
