@@ -1081,7 +1081,7 @@ def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, pa
 	
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	Number_ofsteps=Number_ofGenerations(Size)
-	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
+	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a", step=0, Number_ofGenerations=Number_ofsteps)
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="w",step=0, Number_ofGenerations=Number_ofsteps)
 	return file_energies, data_last_step
 
@@ -1120,7 +1120,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	
 	#data_last_step=[Energies, Normalized_energies, fitnessed_energies, probabilities, directories]
 	Number_ofsteps=Number_ofGenerations(Size)
-	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a")
+	file_energies= print_energies(filename="energies.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=0, Number_ofGenerations=Number_ofsteps)
 	########################selection for mutation
 	selected_energy = selection_energy(Energies, fitnessed_energies)
@@ -1163,6 +1163,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		fitnessed_mutated = f_tanh( Normalized_mutated_energy)
 
 		with open(file_energies, "a") as fh:
+			#fh.write(str(1)+"/"+str(Number_ofGenerations)+ "\n")
 			fh.write("After mutation: "+ str(mutated_energy)+"\n")
 			## imprimir la energia 
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
@@ -1293,9 +1294,11 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	selected_energy = selection_energy(Energies, fitnessed_energies)
 	#print("Selected Energy: ", selected_energy)
 	index_selected = Energies.index(selected_energy[0])
+	text_selecting_1= str(step) +"/"+ str(Number_ofGenerations) + " \n"
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected]+"\n")
 	print(text_selecting)
 	with open(file_energies, "a") as fa:
+		fa.write(text_selecting_1)
 		fa.write(text_selecting)
 		fa.close()
 
@@ -1334,6 +1337,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 	
 
 		with open(file_energies, "a") as fh:
+			fh.write(str(step +1)+"/"+str(Number_ofGenerations)+ "\n")
 			fh.write("After mutation:" + str(mutated_energy) + "\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			for i in range(len(new_energies)):
@@ -1376,9 +1380,11 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	index_selected_2 = Energies.index(selected_energy_2[0])
 	text_selecting ="Selected Energy: "+ str(selected_energy[0]) + " ,Index of Energy:" + str(index_selected) + " ,directory : " + str(directories[index_selected])+ "\n"
 	print(text_selecting)
+	text_selecting_1= str(step) +"/"+ str(Number_ofGenerations) + " \n"
 	mating_text = "Best suited energies for mating =" + str(E_min) +"with index"+str(Energies.index(E_min))+" and "+ str(E_min_2) +"with index"+str(Energies.index(E_min_2)) + "\n"
 	mating_text_1 = "Selected energies for mating =" + str(selected_energy[0]) +"with index"+str(index_selected)+" and "+ str(selected_energy_2[0]) +"with index"+str(index_selected_2)+ "\n"
 	with open(file_energies, "a") as fa:
+		#fa.write(text_selecting_1)
 		fa.write(mating_text)
 		fa.write(mating_text_1)
 		fa.close()
@@ -1410,6 +1416,7 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 
 
 		with open(file_energies, "a") as fh:
+			fh.write(str(step +1)+"/"+str(Number_ofGenerations)+ "\n")
 			fh.write("After mating:"+ str(mated_energy) +"\n")
 			fh.write("Energies,\t  Normalized_energies,\t fitnessed_energies,\t prob,\t dir \n")	
 			for i in range(len(new_energies)):
@@ -1464,7 +1471,11 @@ def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 
 	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
-
+def reinit_cicle():
+	print()
+	## check if the initial pool is done :
+	####if yes continue cicle_ga
+	##else begin from start
 
 def run_dirs(path =""):
 	with  open(path + '/file_dirs.txt', 'r') as file1:
