@@ -1534,9 +1534,9 @@ def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 
 	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
-def reinit_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80):
-	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
-	#Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
+def reinit_cicle_ga(file_dirs ="",data_last_step="", file_energies="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80):
+	#file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
+	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
 	## check if the initial pool is done :
