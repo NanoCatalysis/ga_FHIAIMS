@@ -1157,7 +1157,7 @@ def remove_file(filename=""):
   		print("The file does not exist")
 
 def read_data(filename="",path="./"):
-	print("file reading",filename)
+    print("file reading",filename)
     vector_headers = ['Energies', '  Normalized_energies', ' fitnessed_energies', ' prob', ' dir ']
     with open(path+filename, "r") as f:
         lines_read=f.readlines()
