@@ -187,10 +187,11 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 def create_qsub(size =55, atom ="Au", path =""):
 	file_name_out =  atom + 	str(size) +".out"
 	file_name_sh = path + "/qsub_fhi.sh"
+	queue = "q_residual"
 	print("Creating :" + file_name_sh)
 	
 	text = ["!/bin/bash \n", 
-	"#BSUB -q  q_residual \n",
+	"#BSUB -q  {} \n".format(queue),
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
 	# num cores 
@@ -208,36 +209,6 @@ def create_qsub(size =55, atom ="Au", path =""):
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
 	return "qsub_fhi.sh"
 ###########################################################
-# nueva forma de calculo en archivo init_ga.py
-#
-#def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
-#	file_name_out =  atom + 	str(size) +".out"
-#	file_name_sh = path + "/qsub_fhi.sh"
-#	print("Creating :" + file_name_sh)
-#	
-#	text = ["!/bin/bash \n", 
-#	"#BSUB -q  q_residual \n",
-#	"#BSUB -oo fhi-aims.%J.o \n",
-#	"#BSUB -eo fhi-aims.%J.e \n",
-#	# num cores 
-#	"#BSUB -n  {} \n".format(cores),
-#	#nodos 
-#	'#BSUB -m "{}"\n'.format(node),
-#	"module purge \n",
-#	"module load use.own\n",
-#	"module load fhi-aims/1\n",
-#	"module load python/3.7.6",
-#	"python3 "]
-#	#"mpirun aims.171221_1.scalapack.mpi.x < control.in > " + file_name_out]
-#	#print(text)
-#	with open(file_name_sh, "w") as fh: 
-#		fh.writelines(text)
-#		
-#	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
-#	return "qsub_fhi.sh"
-#
-#
-#
 
 #########################################################
 # runsh is for ela 
@@ -967,15 +938,15 @@ def create_reinit_py(size=55, atom="Au", path="", cores =16):
 		fh.close()
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
-def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
-	
+def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1", queue = "q_residual"):
+	#queue = "q_residual"
 	file_name_sh =  path+"/" + "qsub_fhi.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	complete_path =  os.path.join(THIS_FOLDER,path)
 	
 	text = ["#!/bin/bash \n",
 	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
-	"#BSUB -q  q_residual \n",
+	"#BSUB -q  {} \n".format(queue),
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
 	# num cores 
@@ -995,15 +966,15 @@ def create_qsub_init(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
 	subprocess.call(["chmod", "777",file_name_sh], universal_newlines=True)
 	return file_name_sh
 
-def create_qsub_reinit(size =55, atom ="Au", path ="", cores ="16", node= "g1"):
+def create_qsub_reinit(size =55, atom ="Au", path ="", cores ="16", node= "g1", queue = "q_residual"):
 	
 	file_name_sh =  path+"/" + "qsub_fhi_rerun.sh"
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	complete_path =  os.path.join(THIS_FOLDER,path)
-	
+	queue = "q_residual"
 	text = ["#!/bin/bash \n",
 	#'''#BSUB -R "same[model] span[ptile='!',Intel_EM64T:16,Intel_a:20,Intel_b:20,Intel_c:32,Intel_d:32]" \n''',  
-	"#BSUB -q  q_residual \n",
+	"#BSUB -q  {} \n".format(queue),
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
 	# num cores 
@@ -1035,10 +1006,10 @@ def run_calc(filename):
 	print("Output", output)	
 
 
-def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
+def init_calc(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", queue = "q_residual"):
 	Path = create_folder(name=Atom+str(Size), path= Path)
-	create_init_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
-	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node)
+	#create_init_py(size=Size, atom=Atom, path=Path, cores =int(Cores))
+	file_bsub = create_qsub_init(size=Size, atom=Atom,path=Path,cores=Cores, node=Node,queue=queue)
 	print("file bsub:", file_bsub)
 	run_calc(file_bsub)
 
@@ -1064,7 +1035,7 @@ def create_folder( name ="Au_6", path ="", add =0):
 
 
 
-def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
+def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", queue = "q_residual"):
 	path_master = create_folder(name=Atom+str(Size), path= Path)
 	print("Path :", path_master)
 	dirs = create_pool(N= Size, atom = Atom, path =path_master, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
@@ -1076,12 +1047,12 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1"):
 		fh.close()
 	
 	create_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
-	file_bsub = create_qsub_init(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node)	
+	file_bsub = create_qsub_init(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node, queue=queue)	
 	print("For running write: bsub < ", file_bsub)
 
 	return file_dirs
 
-def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1"):
+def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1", queue = "q_residual"):
 	#path_master = create_folder(name=Atom+str(Size), path= Path)
 	#print("Path :", path_master)
 	#dirs = create_pool(N= Size, atom = Atom, path =path_master, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
@@ -1093,7 +1064,7 @@ def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", 
 	#	fh.close()
 	
 	create_reinit_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
-	file_bsub = create_qsub_reinit(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node)	
+	file_bsub = create_qsub_reinit(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node, queue = queue)	
 	print("For running write: bsub < ", file_bsub)
 
 	return None
@@ -1254,7 +1225,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 	#path_mutated = create_folder(name="{}_mutated".format(name), path= path)
 	##append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 	#kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-	#create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	
 	#run_file(path=path_mutated, filename= './shforrunning.sh')
 #
 #
@@ -1270,7 +1241,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 
 	#path_mating = create_folder(name="{}_mating".format(name), path= path)
 	#kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-	#create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	
 	#run_file(path=path_mutated, filename= './shforrunning.sh')
 #
 #
@@ -1534,8 +1505,9 @@ def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 
 	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
-def reinit_cicle_ga(file_dirs ="",data_last_step="", file_energies="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80):
+def reinit_cicle_ga(file_dirs ="",data_last_step="", file_energies="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80, queue = "q_residual"):
 	#file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
+	#create_qsub_reinit(size =55, atom ="Au", path ="", cores ="16", node= "g1", queue = queue)
 	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
 
