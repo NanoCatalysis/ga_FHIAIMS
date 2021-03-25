@@ -843,7 +843,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 		fh.close()
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
-def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step=""):
+def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step="", file_energies=""):
 	today = datetime.datetime.now()
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	file_name_out =  path +"/"+ "rerun_"+atom + str(size) +".py"
@@ -853,7 +853,7 @@ def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step=""):
 	"import sys\n",
 	"sys.path.append('{}')\n".format(THIS_FOLDER),	
 	'import atompacking_functions as af \n',
-	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt",data_last_step="{}", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,data_last_step,atom,size,path,cores )
+	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt",data_last_step="{}", file_energies="{}", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,data_last_step, file_energies,atom,size,path,cores )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
