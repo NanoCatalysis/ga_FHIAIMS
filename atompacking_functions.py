@@ -843,7 +843,7 @@ def create_py(size=55, atom="Au", path="", cores =16):
 		fh.close()
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
-def create_reinit_py(size=55, atom="Au", path="", cores =16):
+def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step=""):
 	today = datetime.datetime.now()
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	file_name_out =  path +"/"+ "rerun_"+atom + str(size) +".py"
@@ -853,7 +853,7 @@ def create_reinit_py(size=55, atom="Au", path="", cores =16):
 	"import sys\n",
 	"sys.path.append('{}')\n".format(THIS_FOLDER),	
 	'import atompacking_functions as af \n',
-	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
+	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt",data_last_step="{}", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,data_last_step,atom,size,path,cores )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -974,10 +974,10 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", qu
 
 	return file_dirs
 
-def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1", queue = "q_residual"):
+def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1", queue = "q_residual", data_last_step=""):
 	
 	
-	create_reinit_py(size=Size, atom=Atom, path=path_master, cores =int(Cores))
+	create_reinit_py(size=Size, atom=Atom, path=path_master, cores =int(Cores),data_last_step=data_last_step)
 	file_bsub = create_qsub_reinit(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node, queue = queue)	
 	print("For running write: bsub < ", file_bsub)
 
@@ -1157,6 +1157,7 @@ def remove_file(filename=""):
   		print("The file does not exist")
 
 def read_data(filename="",path="./"):
+	print("file reading",filename)
     vector_headers = ['Energies', '  Normalized_energies', ' fitnessed_energies', ' prob', ' dir ']
     with open(path+filename, "r") as f:
         lines_read=f.readlines()
