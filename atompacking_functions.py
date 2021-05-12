@@ -280,7 +280,7 @@ def check_and_rename(file, add=0):
 def create_control_in(path =""):
 	text = [' # DFT details\n',
 	'xc                     pbe\n',
-	'vdw_correction_hirshfeld\n',
+	#'vdw_correction_hirshfeld\n',
 	'spin                   collinear            # non-collinear spin\n',
 	'relativistic           atomic_zora scalar  # basis set (used zora for single-point, atomic_zora for opt)\n',
 	'charge                 0.\n',
