@@ -128,7 +128,7 @@ def print_xyz(size , matrix, atom , path=""):
 	return("Done")	 
 
 def print_matrix_geometryin(matrix =[[],[]],name = "", path= ""):
-
+	print(matrix)
 	at = np.array(matrix)
 	shape = np.shape(at)
 	number =shape[0]
