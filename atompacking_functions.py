@@ -182,20 +182,21 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 #########################################################
 # qsub is for queue miztli 
 #########################################################
-def create_qsub(size =55, atom ="Au", path =""):
-	file_name_out =  atom + 	str(size) +".out"
+def create_qsub(name= "",nodes = "", cores = 16,  queue = "q_residual", path =""):
+	file_name_out =  name +".out"
 	file_name_sh = path + "/qsub_fhi.sh"
-	queue = "q_residual"
+	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+	complete_path =  os.path.join(THIS_FOLDER,path)
 	print("Creating :" + file_name_sh)
-	
+
 	text = ["!/bin/bash \n", 
 	"#BSUB -q  {} \n".format(queue),
 	"#BSUB -oo fhi-aims.%J.o \n",
 	"#BSUB -eo fhi-aims.%J.e \n",
 	# num cores 
-	"#BSUB -n  16 \n",
+	"#BSUB -n  {} \n".format(cores),
 	#nodos 
-	'#BSUB -m "g1" \n',
+	'#BSUB -m "{}" \n'.format(nodes),
 	"module purge \n",
 	"module load use.own\n",
 	"module load fhi-aims/1\n",
@@ -205,7 +206,7 @@ def create_qsub(size =55, atom ="Au", path =""):
 		fh.writelines(text)
 		
 	subprocess.call(["chmod", "754",file_name_sh], universal_newlines=True)
-	return "qsub_fhi.sh"
+	return file_name_sh
 ###########################################################
 
 #########################################################
@@ -280,7 +281,7 @@ def check_and_rename(file, add=0):
 def create_control_in(path =""):
 	text = [' # DFT details\n',
 	'xc                     pbe\n',
-	#'vdw_correction_hirshfeld\n',
+	#z'vdw_correction_hirshfeld\n',
 	'spin                   collinear            # non-collinear spin\n',
 	'relativistic           atomic_zora scalar  # basis set (used zora for single-point, atomic_zora for opt)\n',
 	'charge                 0.\n',
@@ -1400,3 +1401,11 @@ def run_dirs(path =""):
 def minN(elements, n):
     return sorted(elements, reverse=False)[:n] 
 ## rotar sobre angulos pphi y rho y cortar en el nuevo z 
+
+
+def create_unique_run(original_filename = "", name= "",nodes = "", cores = 16,  queue = "q_residual", path =""):
+	filename_sh =  create_qsub(name= name,nodes = nodes, cores = cores,  queue = queue, path =path)
+	create_control_in(path=path)
+	matrix = read_geometry_nextstep(filename=original_filename)
+	print_matrix_geometryin(matrix =matrix,name = name, path= path)
+	run_calc(filename_sh)
