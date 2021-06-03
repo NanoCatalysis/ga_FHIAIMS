@@ -159,7 +159,7 @@ def print_geometryin(matrix,atom ="Au",path=""):
 		fh.close()
 	return "Done"
 
-def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7,cores =16):
+def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decimals =4,Dist_min =2, Dist_max =7,cores =16, vdw = False):
 	cluster =[]
 	Size = size
 	Atom = atom
@@ -173,7 +173,7 @@ def create_cluster(size =55, atom="Au",path ="", R_min = 2.0,R_max = 7,Num_decim
 	print_xyz(size,cluster, Atom, Path_cluster)
 	#create_shforrunning(size,Atom,Path_cluster,cores =cores)
 	create_shforrunning_name(name= Atom+str(size),path = path, cores=cores)
-	create_control_in(path =Path_cluster)
+	create_control_in(path =Path_cluster, vdw=vdw)
 
 	return "Done"
 
@@ -278,10 +278,13 @@ def check_and_rename(file, add=0):
 
 
 
-def create_control_in(path =""):
+def create_control_in(path ="", vdw = False):
+	vdw_str =""
+	if vdw==True:
+		vdw_str='vdw_correction_hirshfeld'
 	text = [' # DFT details\n',
 	'xc                     pbe\n',
-	#z'vdw_correction_hirshfeld\n',
+	'{} \n'.format(vdw_str),
 	'spin                   collinear            # non-collinear spin\n',
 	'relativistic           atomic_zora scalar  # basis set (used zora for single-point, atomic_zora for opt)\n',
 	'charge                 0.\n',
@@ -444,7 +447,7 @@ def Convergence(path):
 	else:
 		return True
 
-def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7,cores =16):
+def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_decimals =4,dist_min =2, dist_max =7,cores =16, vdw = False):
 	
 
 	atom = Atom 
@@ -455,26 +458,9 @@ def create_files(Size = 55, Atom = "Au", Path ="", r_min = 2.0,r_max = 7,num_dec
 	dist_max = Cluster_size(Size, R_ws= 1.44)
 	#directory_name =create_directory(size, atom, path)
 	directory_name = create_folder(name=Atom+str(Size), path=path)
-	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max, cores=cores)
+	create_cluster(size, atom, path = directory_name, R_min = r_min,R_max = r_max,Num_decimals =num_decimals,Dist_min =dist_min, Dist_max =dist_max, cores=cores , vdw = vdw)
 	
-	#host =get_hostname()
-
-	#if host == "basie":
-	#	run_raw = "./" + create_runsh(size, atom, path= directory_name)
-	#else:
-	#	run_raw = "bsub < " + create_qsub(size,atom, path = directory_name)
-	#
-#
-	#run_ready = shlex.split(run_raw)
-	#create_control_in(path =directory_name)
-#
-	#with cd(directory_name):
-	#	print(run_raw)
-	#	subprocess.call(run_raw,universal_newlines = True, shell = True)
-	#	#grep_cmd =shlex.split('grep  \"| Total energy of the DFT / Hartree-Fock s.c.f. calculation      :\" ' +  directory_name + "/nohup.out")
-		#print(grep_cmd)
-		#while subprocess.call(grep_cmd,universal_newlines =True, shell = True) == 1:
-		#print("Listo")
+	
         
 
 	return directory_name
@@ -546,12 +532,12 @@ def print_wami():
 	a_string = output.rstrip("\n")
 	return a_string
 
-def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = 16):
+def create_pool(N= 55, atom = "Au", path = "", R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = 16, vdw = False):
 	pool_size = Pool_size(N)
 	dist = Cluster_size(N)
 	directories =[]
 	for x in range(pool_size):
-		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist)
+		directory= create_files(Size = N, Atom = atom, Path = path, r_min = R_min ,r_max = dist ,num_decimals =Num_decimals ,dist_min =Dist_min , dist_max =dist, vdw = vdw)
 		directories.append(directory)
 
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
@@ -697,8 +683,8 @@ def choose_mutation(mutation ="",filename_mutated = "geometry.in", path="", orig
 	if mutation =="kick":
 		kick_mutation(filename_mutated = filename_mutated, path=path, original_file=original_file)
 
-def create_files_mutation(size=52, atom="",path ="",cores =16):
-	create_control_in(path =path)	
+def create_files_mutation(size=52, atom="",path ="",cores =16, vdw= False):
+	create_control_in(path =path, vdw=vdw)	
 	create_shforrunning_name(name=atom+ str(size), path=path ,cores =cores)
 
 
@@ -826,7 +812,7 @@ def Mating( file1 , file2, percentage_cut=50, filename_mated="", path=""):
 
 
 ########################################################################
-def create_py(size=55, atom="Au", path="", cores =16):
+def create_py(size=55, atom="Au", path="", cores =16, vdw= False):
 	today = datetime.datetime.now()
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	file_name_out =  path +"/"+ "run_"+atom + str(size) +".py"
@@ -838,14 +824,14 @@ def create_py(size=55, atom="Au", path="", cores =16):
 	'import atompacking_functions as af \n',
 	'print("running python for run dirs ") \n'
 	'af.run_dirs("{}/{}") \n'.format(THIS_FOLDER, path),
-	'af.complete_cicle_ga(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,atom,size,path,cores )
+	'af.complete_cicle_ga(file_dirs ="{}/{}/file_dirs.txt", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80, vdw= {}) \n'.format(THIS_FOLDER, path,atom,size,path,cores, vdw  )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
 		fh.close()
 	subprocess.call(["chmod", "754",file_name_out], universal_newlines=True)
 
-def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step="", file_energies=""):
+def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step="", file_energies="", vdw = False):
 	today = datetime.datetime.now()
 	THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 	file_name_out =  path +"/"+ "rerun_"+atom + str(size) +".py"
@@ -855,7 +841,7 @@ def create_reinit_py(size=55, atom="Au", path="", cores =16, data_last_step="", 
 	"import sys\n",
 	"sys.path.append('{}')\n".format(THIS_FOLDER),	
 	'import atompacking_functions as af \n',
-	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt",data_last_step="{}", file_energies="{}", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80) \n'.format(THIS_FOLDER, path,data_last_step, file_energies,atom,size,path,cores )
+	'af.reinit_cicle_ga(file_dirs ="{}/{}/file_dirs.txt",data_last_step="{}", file_energies="{}", Atom = "{}", Size = {}, path = "{}", cores ={},percentage_of_mating=80, vdw= {}) \n'.format(THIS_FOLDER, path,data_last_step, file_energies,atom,size,path,cores, vdw  )
 	]
 	with open(file_name_out, "w") as fh: 
 		fh.writelines(text)
@@ -959,10 +945,10 @@ def create_folder( name ="Au_6", path ="", add =0):
 
 
 
-def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", queue = "q_residual"):
+def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", queue = "q_residual", vdw = False):
 	path_master = create_folder(name=Atom+str(Size), path= Path)
 	print("Path :", path_master)
-	dirs = create_pool(N= Size, atom = Atom, path =path_master, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores))
+	dirs = create_pool(N= Size, atom = Atom, path =path_master, R_min = 2.0, Num_decimals =4, Dist_min= 2 ,generation =0, cores = int(Cores), vdw = vdw)
 	print("Creating : file of directories" )
 	file_dirs= path_master + "/file_dirs.txt"
 	with open(file_dirs, "w") as fh:
@@ -1035,7 +1021,7 @@ def check_convergence_pool_first_step( file_dirs ="", Atom = "Au", Size = 52, pa
 	data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="w",step=0, Number_ofGenerations=Number_ofsteps)
 	return file_energies, data_last_step
 
-def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
+def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ,vdw = False):
 	name = Atom + str(Size) 
 	directories = read_files(file_dirs)
 	Energies =[]
@@ -1104,7 +1090,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		path_mutated = create_folder(name="{}_mutated".format(name), path= path)
 		#append_file(text_to_append=path_mutated, file_to_append=file_dirs)
 		kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-		create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+		create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores, vdw=vdw)
 		run_file(path=path_mutated, filename= './shforrunning.sh')
 
 
@@ -1124,7 +1110,7 @@ def check_convergence_pool( file_dirs ="", Atom = "Au", Size = 52, path ="",core
 		original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step"
 		original_file_2=str(directories[index_selected_2]).replace("\n", "")+"/geometry.in.next_step"
 		Mating( file1= original_file , file2=original_file_2, percentage_cut=50, filename_mated= "geometry.in", path=path_mating)
-		create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores)
+		create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores, vdw = vdw)
 		run_file(path=path_mating, filename= './shforrunning.sh')
 
 		converged, mated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mating)
@@ -1207,7 +1193,7 @@ def Cicle_mutation(data_last_step= "", path = "", name="", cores =16, file_energ
 	except IOError:
 		print("Data last step accesible")
 
-def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52, vdw = False):
 	pool_size = Pool_size(N=Size)
 	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
@@ -1226,7 +1212,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 
 	path_mutated = create_folder(name="{}_mutated".format(Atom+str(Size) ), path= path)
 	kick_mutation(filename_mutated = "geometry.in", path= path_mutated, original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step")
-	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores)
+	create_files_mutation(size=Size, atom=Atom,path =path_mutated,cores =cores , vdw = vdw)
 	run_file(path=path_mutated, filename= './shforrunning.sh')
 
 	
@@ -1271,7 +1257,7 @@ def Mutate(data_last_step= "", path = "", name="", cores =16, file_energies="", 
 		#Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations
 		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 
-def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52):
+def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52, vdw = False):
 	pool_size = Pool_size(N=Size)
 	print("selecting energy from: ", data_last_step)
 	Energies, Normalized_energies, fitnessed_energies, probabilities, directories, step, Number_ofGenerations = read_data(filename=data_last_step,path="") 
@@ -1303,7 +1289,7 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 	original_file=str(directories[index_selected]).replace("\n", "")+"/geometry.in.next_step"
 	original_file_2=str(directories[index_selected_2]).replace("\n", "")+"/geometry.in.next_step"
 	Mating( file1= original_file , file2=original_file_2, percentage_cut=50, filename_mated= "geometry.in", path=path_mating)
-	create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores)
+	create_files_mutation(size=Size, atom=Atom,path =path_mating,cores =cores, vdw=vdw)
 	run_file(path=path_mating, filename= './shforrunning.sh')
 	converged, mated_energy = check_convergence(filename=Atom+ str(Size)+".out",path =path_mating)
 	Normalized_mated_energy =Normalization(mated_energy, E_min, E_max)
@@ -1341,15 +1327,15 @@ def Mate(data_last_step= "", path = "", name="", cores =16, file_energies="", At
 		remove_file(filename=path +"/"+ "data_last_step.txt")		
 		data_last_step= print_energies(filename="data_last_step.txt",path=path, Energies=Energies, Normalized_energies=Normalized_energies, fitnessed_energies=fitnessed_energies, probabilities=probabilities, directories=directories, text_option="a",step=step +1 , Number_ofGenerations=Number_ofGenerations)
 
-def Mutate_or_mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52,percentage_of_mating = 80):
+def Mutate_or_mate(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52,percentage_of_mating = 80, vdw = False):
 	mutate_or_mate= select_mutate_or_mate(percentage_of_mating=percentage_of_mating)
 	if mutate_or_mate =="Mate":
-		Mate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
+		Mate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size , vdw=vdw)
 	elif mutate_or_mate =="Mutate":
-		Mutate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)	
+		Mutate(data_last_step= data_last_step, path = path, name="", cores =cores, file_energies=file_energies, Atom =Atom, Size=Size, vdw = vdw)	
 	print()
 
-def Cicle_ga(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52, percentage_of_mating = 80):
+def Cicle_ga(data_last_step= "", path = "", name="", cores =16, file_energies="", Atom ="Au", Size=52, percentage_of_mating = 80, vdw = False):
 	try:	
 		#check_if_files_exists()
 		with open(data_last_step, "r") as fa:
@@ -1360,7 +1346,7 @@ def Cicle_ga(data_last_step= "", path = "", name="", cores =16, file_energies=""
 		vector = [str(x) for x in vector_1]
 		for x in range (int(vector[0]), int(vector[1])):
 			print("Step:",vector[0]," of", vector[0])
-			Mutate_or_mate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating = percentage_of_mating)
+			Mutate_or_mate(data_last_step= data_last_step, path = path, name=name, cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating = percentage_of_mating , vdw = vdw)
 	except IOError:
 		print("Data last step accesible")
 
@@ -1370,19 +1356,19 @@ def run_file(path="", filename= './shforrunning.sh'):
 
 
 
-def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ):
+def complete_cicle_mutation(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 , vdw = False):
 	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
-	Mutate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size)
-	Cicle_mutation(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size)
+	Mutate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size, vdw= vdw)
+	Cicle_mutation(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size, vdw = vdw)
 
-def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80):
+def complete_cicle_ga(file_dirs ="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80, vdw = False):
 	file_energies, data_last_step = check_convergence_pool_first_step( file_dirs =file_dirs, Atom = Atom, Size = Size, path =path,cores=cores )
-	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
-	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
+	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating, vdw= vdw)
+	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating, vdw= vdw)
 
-def reinit_cicle_ga(file_dirs ="",data_last_step="", file_energies="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80, queue = "q_residual"):
-	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
-	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating)
+def reinit_cicle_ga(file_dirs ="",data_last_step="", file_energies="", Atom = "Au", Size = 52, path ="",cores= 16 ,percentage_of_mating=80, queue = "q_residual" ,vdw = False):
+	Mutate_or_mate(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =cores, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating, vdw = vdw)
+	Cicle_ga(data_last_step= data_last_step, path = path, name="{}+{}".format(Atom,str(Size)), cores =16, file_energies=file_energies, Atom =Atom, Size=Size,percentage_of_mating=percentage_of_mating, vdw= vdw)
 
 
 
@@ -1403,9 +1389,9 @@ def minN(elements, n):
 ## rotar sobre angulos pphi y rho y cortar en el nuevo z 
 
 
-def create_unique_run(original_filename = "", name= "",nodes = "", cores = 16,  queue = "q_residual", path =""):
+def create_unique_run(original_filename = "", name= "",nodes = "", cores = 16,  queue = "q_residual", path ="", vdw = False):
 	filename_sh =  create_qsub(name= name,nodes = nodes, cores = cores,  queue = queue, path =path)
-	create_control_in(path=path)
+	create_control_in(path=path, vdw=vdw )
 	matrix = read_geometry_nextstep(filename=original_filename)
 	print_matrix_geometryin(matrix =matrix,name = name, path= path)
 	run_calc(filename_sh)
