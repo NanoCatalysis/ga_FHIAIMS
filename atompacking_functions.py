@@ -962,10 +962,10 @@ def create_all_files(Size =55, Atom ="Au", Path ="", Cores ="16", Node= "g1", qu
 
 	return file_dirs
 
-def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1", queue = "q_residual", data_last_step="",file_energies=""):
+def create_all_files_reinit(Size =55, Atom ="Au", path_master ="", Cores ="16", Node= "g1", queue = "q_residual", data_last_step="",file_energies="", vdw = False):
 	
 	
-	create_reinit_py(size=Size, atom=Atom, path=path_master, cores =int(Cores),data_last_step=data_last_step, file_energies=file_energies)
+	create_reinit_py(size=Size, atom=Atom, path=path_master, cores =int(Cores),data_last_step=data_last_step, file_energies=file_energies, vdw = False)
 	file_bsub = create_qsub_reinit(size=Size, atom=Atom,path=path_master,cores=Cores, node=Node, queue = queue)	
 	print("For running write: bsub < ", file_bsub)
 
