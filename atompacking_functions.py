@@ -636,9 +636,9 @@ def kick_atom(atom,r_min=0, r_max=1):
     phi = random.uniform(0, 2 * math.pi)
     r = random.uniform(r_min,r_max)
     resize = 0.8
-    x =round(resize*2*(r * math.cos(theta) * math.sin(phi)) +x_i,5)
-    y =round(resize*2*(r * math.sin(theta) * math.sin(phi)) + y_i,5)
-    z =round(resize*2*(r * math.cos(phi)) + z_i,5)
+    x =round(resize*(r * math.cos(theta) * math.sin(phi)) +x_i,5)
+    y =round(resize*(r * math.sin(theta) * math.sin(phi)) + y_i,5)
+    z =round(resize*(r * math.cos(phi)) + z_i,5)
     vector = [x,y,z]
     return  vector
 def recenter_cluster(filename = ""):
